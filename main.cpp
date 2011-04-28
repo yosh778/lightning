@@ -49,6 +49,7 @@ int main ()
 	start->y= 218 - start->sizeY/2;
 
 
+	oslSetKeyAnalogToDPad(PAD_SENS);
 
 	while(!osl_quit)
 	{
