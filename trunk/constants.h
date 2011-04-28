@@ -19,6 +19,10 @@ by Yosh alias Hitman_07
 # define R_BG 16
 # define G_BG 118
 # define B_BG 167
+# define NB_MENU_ELMTS 4
+# define BORDER_MENU 60
+# define LAG_MENU ((HEIGHT - 2*BORDER_MENU - NB_MENU_ELMTS*strHeight) / (NB_MENU_ELMTS - 1))
+# define MENUPOSY (BORDER_MENU + (i)*(strHeight + LAG_MENU))
 
 
 						//game engine
@@ -49,6 +53,7 @@ by Yosh alias Hitman_07
 
 enum {LEFT, RIGHT, UP, DOWN};
 enum {EASY, NORMAL, HARD, GOD};
+enum {PLAY, SETTINGS, CREDITS, QUIT};
 
 typedef struct {
 	int x;
