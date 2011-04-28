@@ -1,5 +1,5 @@
 TARGET = Lightning
-OBJS = main.o ppc.o game.o tinylib.o
+OBJS = main.o menu.o game.o ppc.o tinylib.o
 
 INCDIR =
 CFLAGS = -G4 -Wall -O3 -Wno-write-strings
