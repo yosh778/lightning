@@ -87,7 +87,7 @@ int menu(OSL_COLOR *bgstartColor, OSL_IMAGE *bgstart, OSL_IMAGE *start, int *alp
 			launch = true;
 		}
 		else if (curpos == QUIT && osl_pad.pressed.cross) {
-			menu_on = false;
+			oslQuit();
 		}
 		
 	}

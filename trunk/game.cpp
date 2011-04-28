@@ -208,7 +208,9 @@ Result gameLevel(int hitDmg, int level, bool sublevel, OSL_COLOR bgColor, OSL_IM
 			}
 
 			if (osl_pad.pressed.start || osl_pad.pressed.circle)
-			{
+			{	
+				oslEndFrame();
+				oslSyncFrame();
 				if (quitScreen())	playing = false, Over.quit = true;
 			}
 
