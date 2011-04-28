@@ -13,9 +13,9 @@ by Yosh alias Hitman_07
 #include "tinylib.h"
 
 
-int play(OSL_COLOR *bgstartColor, OSL_IMAGE *bgstart, OSL_IMAGE *start, int *alpha_, int mode)
+int play(int mode)
 {
-	int alpha, beta = 255, hitDmg, level = 1;
+	int hitDmg, level = 1;
 	bool sublevel = false;
 	OSL_COLOR bgColor = NULL;
 	bgColor = RGBA(R_BG,G_BG,B_BG,255);
@@ -30,30 +30,7 @@ int play(OSL_COLOR *bgstartColor, OSL_IMAGE *bgstart, OSL_IMAGE *start, int *alp
 
 	oslPlaySound(mgame, 0);
 	oslSetSoundLoop(mgame, 1);
-
-
-	oslSetKeyAnalogToDPad(PAD_SENS);
-
-	while(beta > 0)
-	{
-		beta-=10;
-
-		if (beta < 0)	beta = 0;
-
-		alpha = floor(*alpha_ * beta/255);
-
-		oslStartDrawing();
-		oslDrawFillRect(0,0,WIDTH,HEIGHT,RGBA(0,0,0,255));
-		//oslDrawImage(player);
-		oslSetAlpha(OSL_FX_ALPHA, beta);
-		oslDrawFillRect(0,0,WIDTH,HEIGHT,*bgstartColor);
-		oslDrawImage(bgstart);
-		oslSetAlpha(OSL_FX_DEFAULT, 0);
-		imFadeIn(start, alpha, 0);
-		oslEndDrawing();
-		oslEndFrame();
-		oslSyncFrame();
-	}
+	
 
 	if (mode == EASY)	hitDmg = HITDMG;
 	else if (mode == NORMAL)	hitDmg = HITDMG*2;
