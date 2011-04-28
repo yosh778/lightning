@@ -10,6 +10,7 @@ by Yosh alias Hitman_07
 #include "constants.h"
 #include "tinylib.h"
 #include "menu.h"
+#include "game.h"
 
 PSP_MODULE_INFO("Lightning", 0, 1, 1);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
@@ -18,7 +19,7 @@ PSP_HEAP_SIZE_MAX();
 int main ()
 {
 	bool alphaBool = true;
-	int alpha = 0;
+	int alpha = 0, difficulty = NORMAL;
 	OSL_COLOR bgstartColor = NULL;
 
 	oslInit(0);
@@ -58,7 +59,7 @@ int main ()
 		if(osl_pad.pressed.cross || osl_pad.pressed.start)
 		{
 			oslStopSound(mstart);
-			menu(&bgstartColor, bgstart,start,&alpha);
+			if (menu(&bgstartColor, bgstart,start,&alpha, &difficulty))	play(difficulty);
 			oslPlaySound(mstart, 0);
 			oslSetSoundLoop(mstart, 1);
 			alpha = 255;
