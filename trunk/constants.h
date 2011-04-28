@@ -31,7 +31,6 @@ by Yosh alias Hitman_07
 # define BOLTLAG 58
 # define TBOLTLAG 36
 
-//# define BOLTLAG 0	//debug
 						
 						//bolt disposition parameters
 # define BORDER_LAGX1 20
