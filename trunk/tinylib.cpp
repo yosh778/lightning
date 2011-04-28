@@ -58,18 +58,24 @@ bool splashScreen(char *location, int timeLimit, int decay, OSL_COLOR bgColor) {
 
 bool startScreen(int level, bool sublevel) {
 
-	int stage = 1, alpha = 0;
-	char levelDisp[10], stageDisp[10];
+	int stage = 1, alpha = 0, levelHeight;
+	char levelDisp[8], stageDisp[8];
 	OSL_FONT *f = oslLoadFontFile("flash0:/font/ltn0.pgf");
 	Address levelPos, stagePos;
-	levelPos.x = (WIDTH - 92)/2;
-	levelPos.y = (HEIGHT - 17)/2;
-	stagePos.x = (WIDTH - 58)/2;
-	stagePos.y = (HEIGHT - 13)/2 + 6 + 17;
 	if (sublevel)	stage = 2;
 
 	sprintf(levelDisp, "Level %d", level);
 	sprintf(stageDisp, "Stage %d", stage);
+	
+	oslIntraFontSetStyle(f, 1.f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
+	oslSetFont(f);
+	levelPos.x = (WIDTH)/2;
+	levelPos.y = (HEIGHT)/2;
+	levelHeight = osl_curFont->charHeight;
+	
+	oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
+	stagePos.x = (WIDTH)/2;
+	stagePos.y = (HEIGHT)/2 + levelHeight;
 
 	oslReadKeys();
 	while (!(osl_pad.pressed.start || osl_pad.pressed.cross)) {
@@ -79,11 +85,11 @@ bool startScreen(int level, bool sublevel) {
 		oslDrawFillRect(0,0,480,272,RGBA(0,0,0,255));
 		oslSetAlpha(OSL_FX_ALPHA, alpha);
 
-		oslIntraFontSetStyle(f, 1.f,RGBA(255,255,255,255), RGBA(0,0,0,0),NULL);
+		oslIntraFontSetStyle(f, 1.f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
 		oslSetFont(f);
 		oslDrawString(levelPos.x, levelPos.y, levelDisp);
 
-		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,0),NULL);
+		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
 		oslSetFont(f);
 		oslDrawString(stagePos.x, stagePos.y, stageDisp);
 		oslSetAlpha(OSL_FX_ALPHA, 255-alpha);
