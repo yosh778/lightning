@@ -108,11 +108,11 @@ bool startScreen(int level, bool sublevel) {
 	while (alpha <255) {
 
 		oslStartDrawing();
-		oslIntraFontSetStyle(f, 1.f,RGBA(255,255,255,255), RGBA(0,0,0,0),NULL);
+		oslIntraFontSetStyle(f, 1.f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
 		oslSetFont(f);
 		oslDrawString(levelPos.x, levelPos.y, levelDisp);
 
-		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,0),NULL);
+		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
 		oslSetFont(f);
 		oslDrawString(stagePos.x, stagePos.y, stageDisp);
 		oslSetAlpha(OSL_FX_ALPHA, alpha);
@@ -134,13 +134,8 @@ bool overScreen(bool over) {
 
 	int alpha = 0;
 	OSL_FONT *f = oslLoadFontFile("flash0:/font/ltn0.pgf");
-	Address loosePos, winPos;
-	loosePos.x = (WIDTH - 284)/2+2;
-	loosePos.y = (HEIGHT - 11)/2;
-	winPos.x = (WIDTH - 339)/2+7;
-	winPos.y = (HEIGHT - 11)/2;
 
-	oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,0),NULL);
+	oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
 	oslSetFont(f);
 
 	oslReadKeys();
@@ -150,8 +145,8 @@ bool overScreen(bool over) {
 		oslStartDrawing();
 		oslSetAlpha(OSL_FX_ALPHA, alpha);
 		oslDrawFillRect(0,0,480,272,RGBA(0,0,0,255));
-		if (over)	oslDrawString(winPos.x, winPos.y, "Congratulations, you just made it through the last level !");
-		else	oslDrawString(loosePos.x, loosePos.y, "You're not good enough to go to the next level.");
+		if (over)	oslDrawString(WIDTH/2, HEIGHT/2, "Congratulations, you just made it through the last level !");
+		else	oslDrawString(WIDTH/2, HEIGHT/2, "You're not good enough to go to the next level.");
 		oslSetAlpha(OSL_FX_DEFAULT, 0);
 		oslEndDrawing();
 		oslEndFrame();
@@ -165,8 +160,8 @@ bool overScreen(bool over) {
 	while (alpha <255) {
 
 		oslStartDrawing();
-		if (over)	oslDrawString(winPos.x, winPos.y, "Congratulations, you just made it through the last level !");
-		else	oslDrawString(loosePos.x, loosePos.y, "You're not good enough to go to the next level.");
+		if (over)	oslDrawString(WIDTH/2, HEIGHT/2, "Congratulations, you just made it through the last level !");
+		else	oslDrawString(WIDTH/2, HEIGHT/2, "You're not good enough to go to the next level.");
 		oslSetAlpha(OSL_FX_ALPHA, alpha);
 		oslDrawFillRect(0,0,480,272,RGBA(0,0,0,255));
 		oslSetAlpha(OSL_FX_DEFAULT, 0);
@@ -185,16 +180,17 @@ bool overScreen(bool over) {
 bool quitScreen() {
 
 	bool quit = false, end = false;
-	int frame = 0, frames = 13;
+	int frame = 0, frames = 13, height[2];
+	char* str_quit[3]; str_quit[0] = "Quit Game ?", str_quit[1] = "X: Yes.", str_quit[2] = "O: No.";
+	
 	OSL_FONT *f = oslLoadFontFile("flash0:/font/ltn0.pgf");
-	Address quitPos0, quitPos1, quitPos2;
-	quitPos0.x = (WIDTH - 118)/2;
-	quitPos0.y = (HEIGHT - 18)/2;
-	quitPos1.x = (WIDTH - 56)/2;
-	quitPos1.y = (HEIGHT - 11)/2 + 18 + 6;
-	quitPos2.x = (WIDTH - 56)/2;
-	quitPos2.y = (HEIGHT - 11)/2 + 18 + 6 + 11 + 10;
-
+	
+	oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
+	oslSetFont(f);
+	height[0] = osl_curFont->charHeight;
+	oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_LEFT);
+	oslSetFont(f);
+	height[1] = osl_curFont->charHeight;
 
 	oslReadKeys();
 
@@ -202,13 +198,13 @@ bool quitScreen() {
 		oslStartDrawing();
 		oslSetAlpha(OSL_FX_ALPHA, 64);
 		oslDrawFillRect(0,0,480,272,RGBA(0,0,0,255));
-		oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,255), RGBA(0,0,0,0),NULL);
+		oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
 		oslSetFont(f);
-		oslDrawString(quitPos0.x, quitPos0.y, "Quit Game ?");
-		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,0),NULL);
+		oslDrawString(WIDTH/2, HEIGHT/2, str_quit[0]);
+		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_LEFT);
 		oslSetFont(f);
-		oslDrawString(quitPos1.x, quitPos1.y, "X: Yes.");
-		oslDrawString(quitPos2.x, quitPos2.y, "O: No.");
+		oslDrawString(WIDTH/2, HEIGHT/2 + height[0], str_quit[1]);
+		oslDrawString(WIDTH/2, HEIGHT/2 + height[0] + height[1], str_quit[2]);
 		oslSetAlpha(OSL_FX_DEFAULT, 0);
 		oslEndDrawing();
 		oslEndFrame();
@@ -224,7 +220,6 @@ bool quitScreen() {
 		if (osl_pad.pressed.cross)	quit = true, end= true;
 		else if (osl_pad.pressed.square || osl_pad.pressed.circle)	quit = false, end= true;
 		oslEndFrame();
-		oslSyncFrame();
 
 	}
 
