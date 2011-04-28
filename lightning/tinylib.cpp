@@ -211,12 +211,14 @@ bool quitScreen() {
 	}
 	
 	oslReadKeys();
-	while (!end && !osl_quit) {
+	while (!end) {
 		
 		oslReadKeys();
 		
 		if (osl_pad.pressed.cross)	quit = true, end= true;
 		else if (osl_pad.pressed.square || osl_pad.pressed.circle)	quit = false, end= true;
+		oslEndFrame();
+		oslSyncFrame();
 		
 	}
 	
