@@ -20,7 +20,7 @@ int main ()
 	bool alphaBool = true;
 	int alpha = 0;
 	OSL_COLOR bgstartColor = NULL;
-	
+
 	oslInit(0);
 
 	oslInitGfx(OSL_PF_8888, 1);
@@ -28,18 +28,18 @@ int main ()
 	oslInitAudio();
 
 	oslIntraFontInit(INTRAFONT_CACHE_MED);
-	
+
 	splashScreen("./res/genesis.jpg", 60*3, 6, RGBA(0,0,0,255));
-	
+
 	OSL_IMAGE *bgstart = NULL, *start = NULL;
 	OSL_SOUND *mstart = NULL;
 
 	mstart = oslLoadSoundFileBGM("./res/mstart.bgm",OSL_FMT_STREAM);
 	oslPlaySound(mstart, 0);
 	oslSetSoundLoop(mstart, 1);
-	
+
 	bgstartColor = RGBA(10,5,39,255);
-	
+
 	bgstart=oslLoadImageFilePNG("./res/bgstart.png",OSL_IN_RAM,OSL_PF_8888);
 	bgstart->x=0;
 	bgstart->y=0;
@@ -47,13 +47,13 @@ int main ()
 	start=oslLoadImageFilePNG("./res/start.png",OSL_IN_RAM,OSL_PF_8888);
 	start->x= 70;
 	start->y= 218 - start->sizeY/2;
-	
-	
-	
+
+
+
 	while(!osl_quit)
 	{
 		oslReadKeys();
-	
+
 		if(osl_pad.pressed.cross || osl_pad.pressed.start)
 		{
 			oslStopSound(mstart);
@@ -63,11 +63,11 @@ int main ()
 			alpha = 255;
 			alphaBool = false;
 		}
-		
-		
+
+
 		if (alpha < 24)	alpha = 24, alphaBool = true;
 		else if (alpha == 255)	alphaBool = false;
-		
+
 		oslStartDrawing();
 		oslDrawFillRect(0,0,480,272,bgstartColor);
 		oslDrawImage(bgstart);
@@ -88,6 +88,7 @@ int main ()
 	oslDeinitAudio();
 	oslEndGfx();
 	oslQuit();
-	
+
 	return 1;
 }
+
