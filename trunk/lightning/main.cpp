@@ -51,43 +51,43 @@ int main ()
 	
 	
 	while(!osl_quit)
-    {
-				oslReadKeys();
-
-        if(osl_pad.pressed.cross || osl_pad.pressed.start)
-        {
-						oslStopSound(mstart);
-						play(&bgstartColor, bgstart,start,&alpha, NORMAL);
-						oslPlaySound(mstart, 0);
-						oslSetSoundLoop(mstart, 1);
-						alpha = 255;
-						alphaBool = false;
-        }
-				
-				
-				if (alpha < 24)	alpha = 24, alphaBool = true;
-				else if (alpha == 255)	alphaBool = false;
-		
-        oslStartDrawing();
-				oslDrawFillRect(0,0,480,272,bgstartColor);
-        oslDrawImage(bgstart);
-				oslSetAlpha(OSL_FX_ALPHA, alpha);
-        oslDrawImage(start);
-				oslSetAlpha(OSL_FX_DEFAULT, 0);
-				if (alphaBool)	alpha = imFadeIn(start, alpha, +6);
-				else if (!alphaBool)	alpha = imFadeIn(start, alpha, -6);
-        oslEndDrawing();
-        oslEndFrame();
-				oslSyncFrame();
+	{
+		oslReadKeys();
+	
+		if(osl_pad.pressed.cross || osl_pad.pressed.start)
+		{
+			oslStopSound(mstart);
+			play(&bgstartColor, bgstart,start,&alpha, NORMAL);
+			oslPlaySound(mstart, 0);
+			oslSetSoundLoop(mstart, 1);
+			alpha = 255;
+			alphaBool = false;
 		}
+		
+		
+		if (alpha < 24)	alpha = 24, alphaBool = true;
+		else if (alpha == 255)	alphaBool = false;
+		
+		oslStartDrawing();
+		oslDrawFillRect(0,0,480,272,bgstartColor);
+		oslDrawImage(bgstart);
+		oslSetAlpha(OSL_FX_ALPHA, alpha);
+		oslDrawImage(start);
+		oslSetAlpha(OSL_FX_DEFAULT, 0);
+		if (alphaBool)	alpha = imFadeIn(start, alpha, +6);
+		else if (!alphaBool)	alpha = imFadeIn(start, alpha, -6);
+		oslEndDrawing();
+		oslEndFrame();
+		oslSyncFrame();
+	}
 
-    oslDeleteSound(mstart);
-    oslDeleteImage(bgstart);
-    oslDeleteImage(start);
-    oslIntraFontShutdown();
-    oslDeinitAudio();
-    oslEndGfx();
-    oslQuit();
-
-    return 1;
+	oslDeleteSound(mstart);
+	oslDeleteImage(bgstart);
+	oslDeleteImage(start);
+	oslIntraFontShutdown();
+	oslDeinitAudio();
+	oslEndGfx();
+	oslQuit();
+	
+	return 1;
 }
