@@ -8,8 +8,8 @@ by Yosh alias Hitman_07
 
 #include <oslib/oslib.h>
 #include "constants.h"
-#include "game.h"
 #include "tinylib.h"
+#include "menu.h"
 
 PSP_MODULE_INFO("Lightning", 0, 1, 1);
 PSP_MAIN_THREAD_ATTR(THREAD_ATTR_USER | THREAD_ATTR_VFPU);
@@ -57,7 +57,7 @@ int main ()
 		if(osl_pad.pressed.cross || osl_pad.pressed.start)
 		{
 			oslStopSound(mstart);
-			play(&bgstartColor, bgstart,start,&alpha, NORMAL);
+			menu(&bgstartColor, bgstart,start,&alpha);
 			oslPlaySound(mstart, 0);
 			oslSetSoundLoop(mstart, 1);
 			alpha = 255;
