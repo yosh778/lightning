@@ -171,7 +171,7 @@ bool overScreen(OSL_FONT *f, bool over) {
 	return true;
 }
 
-bool quitScreen(OSL_FONT *f) {
+bool quitScreen(OSL_SOUND *mgame, OSL_FONT *f) {
 
 	bool quit = false, end = false;
 	int frame = 0, frames = 13, height[2];
@@ -184,7 +184,9 @@ bool quitScreen(OSL_FONT *f) {
 	oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,64), RGBA(0,0,0,64),INTRAFONT_ALIGN_LEFT);
 	oslSetFont(f);
 	height[1] = osl_curFont->charHeight;
-
+	
+	//oslPauseSound(mgame, 1);
+	
 	oslReadKeys();
 
 	while (frame <frames) {
@@ -206,15 +208,17 @@ bool quitScreen(OSL_FONT *f) {
 	}
 
 	oslReadKeys();
-	while (!end) {
+	while (!(end || osl_quit)) {
 
 		oslReadKeys();
 
 		if (osl_pad.pressed.cross)	quit = true, end= true;
 		else if (osl_pad.pressed.square || osl_pad.pressed.circle)	quit = false, end= true;
 		oslEndFrame();
+		oslSyncFrame();
 
 	}
+	//oslPauseSound(mgame, 0);
 
 	return quit;
 }
@@ -223,7 +227,7 @@ void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor
 	
 	bool menu_on = true, go_up = false;
 	int alpha, beta = 0, i, strHeight, modeHeight, settPosX = WIDTH/2, set_mode = false, titleHeight, menuPosX, curpos = 1;
-	char *str_menu[5], *str_mode[4];
+	char *str_menu[5], *str_mode[4], *mod_color = "<Change color theme>";
 	str_menu[0] = "Settings", str_menu[1] = "Difficulty", str_menu[2] = "Change color theme", str_menu[3] = "Load", str_menu[4] = "Save";
 	str_mode[0] = "Easy", str_mode[1] = "Normal", str_mode[2] = "Hard", str_mode[3] = "God";
 	
@@ -307,9 +311,13 @@ void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor
 		oslIntraFontSetStyle(f, 1.25f,RGBA(224,224,224,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
 		oslDrawString(settPosX, BORDER_SETT + 10, str_menu[0]);
 		for (i=1; i<5; i++) {
-			if (curpos == i) {
-				oslIntraFontSetStyle(f, 0.9f,RGBA(alpha,alpha,alpha,255), RGBA((255-alpha)/3,(255-alpha)/3,(255-alpha)/3,128),INTRAFONT_ALIGN_CENTER);
+			if ((curpos == i)&& (curpos != SET_COL+1)) {
+				oslIntraFontSetStyle(f, 1.f,RGBA(alpha,alpha,alpha,255), RGBA((255-alpha)/3,(255-alpha)/3,(255-alpha)/3,128),INTRAFONT_ALIGN_CENTER);
 				oslDrawString(settPosX, SETTPOSY, str_menu[i]);
+			}
+			else if ((i == SET_COL+1)&& (curpos == SET_COL+1)) {
+				oslIntraFontSetStyle(f, 1.f,RGBA(alpha,alpha,alpha,255), RGBA((255-alpha)/3,(255-alpha)/3,(255-alpha)/3,128),INTRAFONT_ALIGN_CENTER);
+				oslDrawString(settPosX, SETTPOSY, mod_color);
 			}
 			else {
 				oslIntraFontSetStyle(f, 0.85f,RGBA(192,192,192,255), RGBA(0,0,0,128),INTRAFONT_ALIGN_CENTER);
@@ -342,17 +350,25 @@ void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor
 		else if (set_mode && (osl_pad.pressed.circle || osl_pad.pressed.cross)) {
 			set_mode = false;
 		}
-		else if (curpos == SET_COL && osl_pad.held.cross) {
-			/*(*bg_col_m)++;
-			*bgstartColor = RGBA(6*(Bg_col->r)*(*bg_col_m),6*(Bg_col->g)*(*bg_col_m),6*(Bg_col->b)*(*bg_col_m),255);*/
+		else if (curpos == SET_COL+1) {
+		if (osl_pad.pressed.left)
+		{
+			(*bg_col_m)--;
+			if (*bg_col_m <1)	(*bg_col_m) = 1;
+			*bgstartColor = RGBA(6*(Bg_col->r)*(*bg_col_m),6*(Bg_col->g)*(*bg_col_m),6*(Bg_col->b)*(*bg_col_m),255);
+		}
+		else if (osl_pad.pressed.right)
+		{
+			(*bg_col_m)++;
+			if (*bg_col_m >100)	(*bg_col_m) = 100;
+		}	
+			*bgstartColor = RGBA(6*(Bg_col->r)*(*bg_col_m),6*(Bg_col->g)*(*bg_col_m),6*(Bg_col->b)*(*bg_col_m),255);
 		}
 		else if (curpos == SET_LOAD && osl_pad.held.cross) {
-			/*(*bg_col_m)--;
-			*bgstartColor = RGBA(6*(Bg_col->r)*(*bg_col_m),6*(Bg_col->g)*(*bg_col_m),6*(Bg_col->b)*(*bg_col_m),255);*/
 		}
 		else if (curpos == SET_SAVE && osl_pad.pressed.cross) {
 		}
-		else if (!set_mode && osl_pad.pressed.circle) {
+		if (!set_mode && osl_pad.pressed.circle) {
 			menu_on = false;
 		}
 
