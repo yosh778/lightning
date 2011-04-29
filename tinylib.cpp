@@ -226,7 +226,7 @@ bool quitScreen(OSL_SOUND *mgame, OSL_FONT *f) {
 void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, int *difficulty) {
 	
 	bool menu_on = true, go_up = false;
-	int alpha, beta = 0, i, strHeight, modeHeight, settPosX = WIDTH/2, set_mode = false, titleHeight, menuPosX, curpos = 1;
+	int alpha, /*beta = 0, */i, strHeight, modeHeight, settPosX = WIDTH/2, set_mode = false, titleHeight, menuPosX, curpos = 1;
 	char *str_menu[4], *str_mode[4], *mod_color = "<-Change menu color->";
 	str_menu[0] = "Settings", str_menu[1] = "Difficulty", str_menu[2] = "Change menu color", str_menu[3] = "Help"; //str_menu[3] = "Load", str_menu[4] = "Save";
 	str_mode[0] = "Easy", str_mode[1] = "Normal", str_mode[2] = "Hard", str_mode[3] = "God";
