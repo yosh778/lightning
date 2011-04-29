@@ -13,7 +13,7 @@ by Yosh alias Hitman_07
 #include "tinylib.h"
 
 
-int play(int mode)
+int play(OSL_FONT *f, int mode)
 {
 	int hitDmg, level = 1;
 	bool sublevel = false;
@@ -28,6 +28,8 @@ int play(int mode)
 	Result Over;
 	Over.quit = false;
 
+	oslSetKeyAnalogToDPad(PAD_SENS);
+	
 	oslPlaySound(mgame, 0);
 	oslSetSoundLoop(mgame, 1);
 	
@@ -39,17 +41,17 @@ int play(int mode)
 
 
 	while (level <5 && !Over.quit) {
-		startScreen(level, sublevel);
-		Over = gameLevel(hitDmg, level, sublevel, bgColor, player);
+		startScreen(f, level, sublevel);
+		Over = gameLevel(f, hitDmg, level, sublevel, bgColor, player);
 
 		if (Over.life >0) {
 			if (sublevel)	level ++;
 			sublevel = !sublevel;
 		}
-		else if (!Over.quit)	overScreen(false);
+		else if (!Over.quit)	overScreen(f, false);
 	}
 
-	if (level >4)	overScreen(true);
+	if (level >4)	overScreen(f, true);
 
 
 	oslStopSound(mgame);
@@ -60,10 +62,10 @@ int play(int mode)
 }
 
 
-Result gameLevel(int hitDmg, int level, bool sublevel, OSL_COLOR bgColor, OSL_IMAGE *player) {
+Result gameLevel(OSL_FONT *f, int hitDmg, int level, bool sublevel, OSL_COLOR bgColor, OSL_IMAGE *player) {
 
-	bool playing = true, tboltOn[4] = {false};
-	int i, j, alpha = 255, alpha2 = alpha, delta[4] = {alpha}, boltOn[4][4] = {{0}}, time = 0, oldTime = 0, timeLimit;
+	bool playing = true, tboltOn[4] = {false}, game_quit = false, lost_game = false, won_game = false;
+	int i, j, k, alpha = 255, alpha2 = alpha, delta[4] = {alpha}, redraw = 1, boltOn[4][4] = {{0}}, time = 0, oldTime = 0, timeLimit;
 	int nbBolt[4], maxBoltX, maxBoltY, n, hitDelay = HITUNIT;
 	OSL_IMAGE *hbolt = NULL, *vbolt = NULL, *tbolt1 = NULL, *tbolt2 = NULL;
 	hbolt=oslLoadImageFilePNG("./res/hbolt.png",OSL_IN_RAM,OSL_PF_8888);
@@ -206,14 +208,9 @@ Result gameLevel(int hitDmg, int level, bool sublevel, OSL_COLOR bgColor, OSL_IM
 				player->y = player->y + MOVE_STEP;
 				if (player->y > HEIGHT-player->sizeY)	player->y = HEIGHT-player->sizeY;
 			}
-
-			if (osl_pad.pressed.start || osl_pad.pressed.circle)
-			{	
-				oslEndFrame();
-				oslSyncFrame();
-				if (quitScreen())	playing = false, Over.quit = true;
-			}
-
+			
+			k = 0;
+			while (k <redraw) {
 			if (!Over.quit) {
 				oslStartDrawing();
 				oslDrawGradientRect(0,0,WIDTH,HEIGHT,bgColor,RGB(4,33,47),RGB(255,255,255),bgColor);
@@ -296,20 +293,8 @@ Result gameLevel(int hitDmg, int level, bool sublevel, OSL_COLOR bgColor, OSL_IM
 				}
 
 
-				if (Over.life == 0)
-				{
-					playing = false;
-					Over.quit = false;
-				}
-				/*if (osl_pad.pressed.L)
-				{
-					playing = false;
-				}*/
-
-
 				time++;
 
-				if (time >timeLimit)	playing = false;
 
 				oslSetAlpha(OSL_FX_TINT, RGBA(253+((2*(100-Over.life))/100), 255-((255*(100-Over.life))/100), 117-((117*(100-Over.life))/100), 255));
 				oslDrawImage(player);
@@ -318,6 +303,23 @@ Result gameLevel(int hitDmg, int level, bool sublevel, OSL_COLOR bgColor, OSL_IM
 				oslEndFrame();
 				oslSyncFrame();
 			}
+			
+			if (redraw == 2) {
+				if (game_quit)	{ if (quitScreen(f))	playing = false, Over.quit = true;	else	game_quit = false; }
+				else if (lost_game)	playing = false, Over.quit = false;
+				else if (won_game)	playing = false;
+			}
+
+			else if (osl_pad.pressed.start || osl_pad.pressed.circle)	redraw = 2, game_quit = true;
+			
+			else if (time >timeLimit/* || osl_pad.held.L*/)	redraw = 2, won_game = true;
+			
+			else if (Over.life == 0)	redraw = 2, lost_game = true;
+			
+			
+			k++;
+			}
+			redraw = 1;
 		}
 
 		oldTime = time;

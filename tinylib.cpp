@@ -56,24 +56,23 @@ bool splashScreen(char *location, int timeLimit, int decay, OSL_COLOR bgColor) {
 	return true;
 }
 
-bool startScreen(int level, bool sublevel) {
+bool startScreen(OSL_FONT *f, int level, bool sublevel) {
 
 	int stage = 1, alpha = 0, levelHeight;
 	char levelDisp[8], stageDisp[8];
-	OSL_FONT *f = oslLoadFontFile("flash0:/font/ltn0.pgf");
 	Address levelPos, stagePos;
 	if (sublevel)	stage = 2;
 
 	sprintf(levelDisp, "Level %d", level);
 	sprintf(stageDisp, "Stage %d", stage);
 	
-	oslIntraFontSetStyle(f, 1.f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
+	oslIntraFontSetStyle(f, 1.f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
 	oslSetFont(f);
 	levelPos.x = (WIDTH)/2;
 	levelPos.y = (HEIGHT)/2;
 	levelHeight = osl_curFont->charHeight;
 	
-	oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
+	oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
 	stagePos.x = (WIDTH)/2;
 	stagePos.y = (HEIGHT)/2 + levelHeight;
 
@@ -85,11 +84,11 @@ bool startScreen(int level, bool sublevel) {
 		oslDrawFillRect(0,0,480,272,RGBA(0,0,0,255));
 		oslSetAlpha(OSL_FX_ALPHA, alpha);
 
-		oslIntraFontSetStyle(f, 1.f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
+		oslIntraFontSetStyle(f, 1.f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
 		oslSetFont(f);
 		oslDrawString(levelPos.x, levelPos.y, levelDisp);
 
-		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
+		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
 		oslSetFont(f);
 		oslDrawString(stagePos.x, stagePos.y, stageDisp);
 		oslSetAlpha(OSL_FX_ALPHA, 255-alpha);
@@ -108,11 +107,11 @@ bool startScreen(int level, bool sublevel) {
 	while (alpha <255) {
 
 		oslStartDrawing();
-		oslIntraFontSetStyle(f, 1.f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
+		oslIntraFontSetStyle(f, 1.f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
 		oslSetFont(f);
 		oslDrawString(levelPos.x, levelPos.y, levelDisp);
 
-		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
+		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
 		oslSetFont(f);
 		oslDrawString(stagePos.x, stagePos.y, stageDisp);
 		oslSetAlpha(OSL_FX_ALPHA, alpha);
@@ -124,18 +123,14 @@ bool startScreen(int level, bool sublevel) {
 		alpha+= 10;
 	}
 
-	oslDeleteFont(f);
-
-
 	return true;
 }
 
-bool overScreen(bool over) {
+bool overScreen(OSL_FONT *f, bool over) {
 
 	int alpha = 0;
-	OSL_FONT *f = oslLoadFontFile("flash0:/font/ltn0.pgf");
 
-	oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
+	oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
 	oslSetFont(f);
 
 	oslReadKeys();
@@ -145,6 +140,7 @@ bool overScreen(bool over) {
 		oslStartDrawing();
 		oslSetAlpha(OSL_FX_ALPHA, alpha);
 		oslDrawFillRect(0,0,480,272,RGBA(0,0,0,255));
+		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
 		if (over)	oslDrawString(WIDTH/2, HEIGHT/2, "Congratulations, you just made it through the last level !");
 		else	oslDrawString(WIDTH/2, HEIGHT/2, "You're not good enough to go to the next level.");
 		oslSetAlpha(OSL_FX_DEFAULT, 0);
@@ -160,6 +156,7 @@ bool overScreen(bool over) {
 	while (alpha <255) {
 
 		oslStartDrawing();
+		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
 		if (over)	oslDrawString(WIDTH/2, HEIGHT/2, "Congratulations, you just made it through the last level !");
 		else	oslDrawString(WIDTH/2, HEIGHT/2, "You're not good enough to go to the next level.");
 		oslSetAlpha(OSL_FX_ALPHA, alpha);
@@ -171,24 +168,19 @@ bool overScreen(bool over) {
 		alpha+= 10;
 	}
 
-	oslDeleteFont(f);
-
-
 	return true;
 }
 
-bool quitScreen() {
+bool quitScreen(OSL_FONT *f) {
 
 	bool quit = false, end = false;
 	int frame = 0, frames = 13, height[2];
 	char* str_quit[3]; str_quit[0] = "Quit Game ?", str_quit[1] = "X: Yes.", str_quit[2] = "O: No.";
 	
-	OSL_FONT *f = oslLoadFontFile("flash0:/font/ltn0.pgf");
-	
-	oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
+	oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,64), RGBA(0,0,0,64),INTRAFONT_ALIGN_CENTER);
 	oslSetFont(f);
 	height[0] = osl_curFont->charHeight;
-	oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_LEFT);
+	oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,64), RGBA(0,0,0,64),INTRAFONT_ALIGN_LEFT);
 	oslSetFont(f);
 	height[1] = osl_curFont->charHeight;
 
@@ -198,10 +190,10 @@ bool quitScreen() {
 		oslStartDrawing();
 		oslSetAlpha(OSL_FX_ALPHA, 64);
 		oslDrawFillRect(0,0,480,272,RGBA(0,0,0,255));
-		oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_CENTER);
+		oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,255), RGBA(0,0,0,64),INTRAFONT_ALIGN_CENTER);
 		oslSetFont(f);
 		oslDrawString(WIDTH/2, HEIGHT/2, str_quit[0]);
-		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,0),INTRAFONT_ALIGN_LEFT);
+		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,64),INTRAFONT_ALIGN_LEFT);
 		oslSetFont(f);
 		oslDrawString(WIDTH/2, HEIGHT/2 + height[0], str_quit[1]);
 		oslDrawString(WIDTH/2, HEIGHT/2 + height[0] + height[1], str_quit[2]);
@@ -222,9 +214,6 @@ bool quitScreen() {
 		oslEndFrame();
 
 	}
-
-	oslDeleteFont(f);
-
 
 	return quit;
 }
