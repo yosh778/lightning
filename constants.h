@@ -10,7 +10,7 @@ by Yosh alias Hitman_07
 # ifndef H_CONSTANTS
 # define H_CONSTANTS
 
-						// main syst
+// main syst
 # define WIDTH 480
 # define HEIGHT 272
 # define PAD_SENS 80
@@ -25,7 +25,7 @@ by Yosh alias Hitman_07
 # define MENUPOSY (BORDER_MENU + (i)*(strHeight + LAG_MENU))
 
 
-						//game engine
+//game engine
 # define MOVE_STEP 12
 # define HITUNIT 30
 # define TIMEUNIT 10*60
@@ -35,8 +35,8 @@ by Yosh alias Hitman_07
 # define BOLTLAG 58
 # define TBOLTLAG 36
 
-						
-						//bolt disposition parameters
+
+//bolt disposition parameters
 # define BORDER_LAGX1 20
 # define BORDER_LAGX2 60
 # define BORDER_LAGY1 60

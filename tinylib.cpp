@@ -65,13 +65,13 @@ bool startScreen(OSL_FONT *f, int level, bool sublevel) {
 
 	sprintf(levelDisp, "Level %d", level);
 	sprintf(stageDisp, "Stage %d", stage);
-	
+
 	oslIntraFontSetStyle(f, 1.f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
 	oslSetFont(f);
 	levelPos.x = (WIDTH)/2;
 	levelPos.y = (HEIGHT)/2;
 	levelHeight = osl_curFont->charHeight;
-	
+
 	oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
 	stagePos.x = (WIDTH)/2;
 	stagePos.y = (HEIGHT)/2 + levelHeight;
@@ -175,8 +175,9 @@ bool quitScreen(OSL_FONT *f) {
 
 	bool quit = false, end = false;
 	int frame = 0, frames = 13, height[2];
-	char* str_quit[3]; str_quit[0] = "Quit Game ?", str_quit[1] = "X: Yes.", str_quit[2] = "O: No.";
-	
+	char* str_quit[3];
+	str_quit[0] = "Quit Game ?", str_quit[1] = "X: Yes.", str_quit[2] = "O: No.";
+
 	oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,64), RGBA(0,0,0,64),INTRAFONT_ALIGN_CENTER);
 	oslSetFont(f);
 	height[0] = osl_curFont->charHeight;
