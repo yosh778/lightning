@@ -65,7 +65,7 @@ int main ()
 		{
 			if (menu(&bg_col_m, &Bg_col, f, &bgstartColor, bgstart,start,&alpha, &difficulty)) {
 				oslStopSound(mstart);
-				play(mgame, f, difficulty);
+				play(&Bg_col, &bg_col_m, mgame, f, difficulty);
 				oslPlaySound(mstart, 0);
 				oslSetSoundLoop(mstart, 1);
 			}
