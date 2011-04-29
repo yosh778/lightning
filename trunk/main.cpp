@@ -35,7 +35,7 @@ int main ()
 	oslIntraFontInit(INTRAFONT_CACHE_MED);
 	OSL_FONT *f = oslLoadFontFile("flash0:/font/ltn0.pgf");
 
-	//splashScreen("./res/genesis.jpg", 60*3, 6, RGBA(0,0,0,255));
+	splashScreen("./res/genesis.jpg", 60*3, 6, RGBA(0,0,0,255));
 
 	OSL_IMAGE *bgstart = NULL, *start = NULL;
 	OSL_SOUND *mstart = NULL;
