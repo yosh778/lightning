@@ -16,9 +16,9 @@ by Yosh alias Hitman_07
 # define PAD_SENS 80
 # define HITUNIT 30
 # define HITDMG 1
-# define R_BG 16
-# define G_BG 118
-# define B_BG 167
+# define R_BG 27
+# define G_BG 32
+# define B_BG 245
 # define NB_MENU_ELMTS 4
 # define BORDER_MENU 60
 # define LAG_MENU ((HEIGHT - 2*BORDER_MENU - NB_MENU_ELMTS*strHeight) / (NB_MENU_ELMTS - 1))

@@ -99,22 +99,20 @@ Result gameLevel(OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, in
 
 	// sets corresponding background (darker at each level/stage) and difficulty
 	if (level == 1)	{
-		if (sublevel == false)	maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = TIMEUNIT*(level*2-1), bgColor = RGBA(((*bg_col_m)*Bg_col->r*(10-level*2))/8,((*bg_col_m)*Bg_col->g*(10-level*2))/8,((*bg_col_m)*Bg_col->b*(10-level*2))/8,255);
-		else	maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA(((*bg_col_m)*Bg_col->r*(10-level*2+1))/8,((*bg_col_m)*Bg_col->g*(10-level*2+1))/8,((*bg_col_m)*Bg_col->b*(10-level*2+1))/8,255);
+		if (sublevel == false)	maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = TIMEUNIT*(level*2-1), bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
+		else	maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
 	}
 	else if (level == 2)	{
-		if (sublevel == false)	maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), bgColor = RGBA(((*bg_col_m)*Bg_col->r*(10-level*2))/8,((*bg_col_m)*Bg_col->g*(10-level*2))/8,((*bg_col_m)*Bg_col->b*(10-level*2))/8,255);
-		else	maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA(((*bg_col_m)*Bg_col->r*(10-level*2+1))/8,((*bg_col_m)*Bg_col->g*(10-level*2+1))/8,((*bg_col_m)*Bg_col->b*(10-level*2+1))/8,255);
+		if (sublevel == false)	maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
+		else	maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
 	}
 	else if (level == 3)	{
-		bgColor = RGBA((R_BG*(5-level))/5,(G_BG*(5-level))/5,(B_BG*(5-level))/5,255);
-		if (sublevel == false)	maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), bgColor = RGBA(((*bg_col_m)*Bg_col->r*(10-level*2))/8,((*bg_col_m)*Bg_col->g*(10-level*2))/8,((*bg_col_m)*Bg_col->b*(10-level*2))/8,255);
-		else	maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA(((*bg_col_m)*Bg_col->r*(10-level*2+1))/8,((*bg_col_m)*Bg_col->g*(10-level*2+1))/8,((*bg_col_m)*Bg_col->b*(10-level*2+1))/8,255);
+		if (sublevel == false)	maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
+		else	maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
 	}
 	else	{
-		bgColor = RGBA((R_BG*(5-level))/5,(G_BG*(5-level))/5,(B_BG*(5-level))/5,255);
-		if (sublevel == false)	maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), bgColor = RGBA(((*bg_col_m)*Bg_col->r*(10-level*2))/8,((*bg_col_m)*Bg_col->g*(10-level*2))/8,((*bg_col_m)*Bg_col->b*(10-level*2))/8,255);
-		else	maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA(((*bg_col_m)*Bg_col->r*(10-level*2+1))/8,((*bg_col_m)*Bg_col->g*(10-level*2+1))/8,((*bg_col_m)*Bg_col->b*(10-level*2+1))/8,255);
+		if (sublevel == false)	maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
+		else	maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
 	}
 
 
@@ -210,8 +208,7 @@ Result gameLevel(OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, in
 			while (k <redraw) {
 				if (!Over.quit) {
 					oslStartDrawing();
-					oslDrawGradientRect(0,0,WIDTH,HEIGHT,bgColor,RGB(4,33,47),RGB(255,255,255),bgColor);
-					//oslDrawGradientRect(0,0,WIDTH,HEIGHT,bgColor,/*bgColor,bgColor,*/RGB(4,33,47),RGB(255,255,255),bgColor);
+					oslDrawGradientRect(0,0,WIDTH,HEIGHT,bgColor,RGB(2,3,40),RGB(255,255,255),bgColor);
 
 					// draws images and checks collisions
 					for (i=LEFT; i<DOWN+1; i++)
