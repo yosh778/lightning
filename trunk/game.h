@@ -10,7 +10,7 @@ by Yosh alias Hitman_07
 # ifndef H_GAME
 # define H_GAME
 
-int play(int mode);
-Result gameLevel(int hitDmg, int level, bool sublevel, OSL_COLOR bgColor, OSL_IMAGE *player);
+int play(OSL_FONT *f, int mode);
+Result gameLevel(OSL_FONT *f, int hitDmg, int level, bool sublevel, OSL_COLOR bgColor, OSL_IMAGE *player);
 
 # endif

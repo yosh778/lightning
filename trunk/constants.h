@@ -63,6 +63,11 @@ typedef struct {
 	int life;
 	bool quit;
 } Result;
+typedef struct {
+	int r;
+	int g;
+	int b;
+} Color;
 
 
 # endif
