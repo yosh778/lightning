@@ -29,10 +29,10 @@ int play(OSL_FONT *f, int mode)
 	Over.quit = false;
 
 	oslSetKeyAnalogToDPad(PAD_SENS);
-	
+
 	oslPlaySound(mgame, 0);
 	oslSetSoundLoop(mgame, 1);
-	
+
 
 	if (mode == EASY)	hitDmg = HITDMG;
 	else if (mode == NORMAL)	hitDmg = HITDMG*2;
@@ -208,116 +208,119 @@ Result gameLevel(OSL_FONT *f, int hitDmg, int level, bool sublevel, OSL_COLOR bg
 				player->y = player->y + MOVE_STEP;
 				if (player->y > HEIGHT-player->sizeY)	player->y = HEIGHT-player->sizeY;
 			}
-			
+
 			k = 0;
 			while (k <redraw) {
-			if (!Over.quit) {
-				oslStartDrawing();
-				oslDrawGradientRect(0,0,WIDTH,HEIGHT,bgColor,RGB(4,33,47),RGB(255,255,255),bgColor);
+				if (!Over.quit) {
+					oslStartDrawing();
+					oslDrawGradientRect(0,0,WIDTH,HEIGHT,bgColor,RGB(4,33,47),RGB(255,255,255),bgColor);
 
-				// draws images and checks collisions
-				for (i=LEFT; i<DOWN+1; i++)
-				{
-					if (tboltOn[i]) {
-						if (i == 0) {
-							tbolt1->x = tboltPos[i].x;
-							tbolt1->y = tboltPos[i].y;
-							if (((time - oldTime) >hitDelay)&&(delta[i] == 255)) {
-								if (isCollideCopy(player,tbolt1,player->x,player->y,0,0,tboltPos[i].x,tboltPos[i].y,0,0)) {
-									Over.life-=hitDmg;
-									if (Over.life <0) Over.life = 0;
-								}
-							}
-							delta[i] = imFadeIn(tbolt1, delta[i], 10);
-						}
-						else if (i == 1) {
-							tbolt2->x = tboltPos[i].x;
-							tbolt2->y = tboltPos[i].y;
-							if (((time - oldTime) >hitDelay)&&(delta[i] == 255)) {
-								if (isCollideCopy(player,tbolt2,player->x,player->y,0,0,tboltPos[i].x,tboltPos[i].y,0,0)) {
-									Over.life-=hitDmg;
-									if (Over.life <0) Over.life = 0;
-								}
-							}
-							delta[i] = imFadeIn(tbolt2, delta[i], 10);
-						}
-						else if (i == 2) {
-							tbolt2->x = tboltPos[i].x;
-							tbolt2->y = tboltPos[i].y;
-							if (((time - oldTime) >hitDelay)&&(delta[i] == 255)) {
-								if (isCollideCopy(player,tbolt2,player->x,player->y,0,0,tboltPos[i].x,tboltPos[i].y,0,0)) {
-									Over.life-=hitDmg;
-									if (Over.life <0) Over.life = 0;
-								}
-							}
-							delta[i] = imFadeIn(tbolt2, delta[i], 10);
-						}
-						else {
-							tbolt1->x = tboltPos[i].x;
-							tbolt1->y = tboltPos[i].y;
-							if (((time - oldTime) >hitDelay)&&(delta[i] == 255)) {
-								if (isCollideCopy(player,tbolt1,player->x,player->y,0,0,tboltPos[i].x,tboltPos[i].y,0,0)) {
-									Over.life-=hitDmg;
-									if (Over.life <0) Over.life = 0;
-								}
-							}
-							delta[i] = imFadeIn(tbolt1, delta[i], 10);
-						}
-					}
-
-					for (j=0; j<4; j++)
+					// draws images and checks collisions
+					for (i=LEFT; i<DOWN+1; i++)
 					{
-						if ((i >RIGHT) && boltOn[i][j]) {
-							vbolt->x = boltPos[i][j].x;
-							vbolt->y = boltPos[i][j].y;
-							if (((time - oldTime) >hitDelay)&&(alpha == 255)) {
-								if (isCollideCopy(player,vbolt,player->x,player->y,0,0,boltPos[i][j].x,boltPos[i][j].y,0,0)) {
-									Over.life-=hitDmg;
-									if (Over.life <0) Over.life = 0;
+						if (tboltOn[i]) {
+							if (i == 0) {
+								tbolt1->x = tboltPos[i].x;
+								tbolt1->y = tboltPos[i].y;
+								if (((time - oldTime) >hitDelay)&&(delta[i] == 255)) {
+									if (isCollideCopy(player,tbolt1,player->x,player->y,0,0,tboltPos[i].x,tboltPos[i].y,0,0)) {
+										Over.life-=hitDmg;
+										if (Over.life <0) Over.life = 0;
+									}
 								}
+								delta[i] = imFadeIn(tbolt1, delta[i], 10);
 							}
-							alpha = imFadeIn(vbolt, alpha, 10);
+							else if (i == 1) {
+								tbolt2->x = tboltPos[i].x;
+								tbolt2->y = tboltPos[i].y;
+								if (((time - oldTime) >hitDelay)&&(delta[i] == 255)) {
+									if (isCollideCopy(player,tbolt2,player->x,player->y,0,0,tboltPos[i].x,tboltPos[i].y,0,0)) {
+										Over.life-=hitDmg;
+										if (Over.life <0) Over.life = 0;
+									}
+								}
+								delta[i] = imFadeIn(tbolt2, delta[i], 10);
+							}
+							else if (i == 2) {
+								tbolt2->x = tboltPos[i].x;
+								tbolt2->y = tboltPos[i].y;
+								if (((time - oldTime) >hitDelay)&&(delta[i] == 255)) {
+									if (isCollideCopy(player,tbolt2,player->x,player->y,0,0,tboltPos[i].x,tboltPos[i].y,0,0)) {
+										Over.life-=hitDmg;
+										if (Over.life <0) Over.life = 0;
+									}
+								}
+								delta[i] = imFadeIn(tbolt2, delta[i], 10);
+							}
+							else {
+								tbolt1->x = tboltPos[i].x;
+								tbolt1->y = tboltPos[i].y;
+								if (((time - oldTime) >hitDelay)&&(delta[i] == 255)) {
+									if (isCollideCopy(player,tbolt1,player->x,player->y,0,0,tboltPos[i].x,tboltPos[i].y,0,0)) {
+										Over.life-=hitDmg;
+										if (Over.life <0) Over.life = 0;
+									}
+								}
+								delta[i] = imFadeIn(tbolt1, delta[i], 10);
+							}
 						}
-						else if (boltOn[i][j]) {
-							hbolt->x = boltPos[i][j].x;
-							hbolt->y = boltPos[i][j].y;
-							if (((time - oldTime) >hitDelay)&&(alpha2 == 255)) {
-								if (isCollideCopy(player,hbolt,player->x,player->y,0,0,boltPos[i][j].x,boltPos[i][j].y,0,0)) {
-									Over.life-=hitDmg;
-									if (Over.life <0) Over.life = 0;
+
+						for (j=0; j<4; j++)
+						{
+							if ((i >RIGHT) && boltOn[i][j]) {
+								vbolt->x = boltPos[i][j].x;
+								vbolt->y = boltPos[i][j].y;
+								if (((time - oldTime) >hitDelay)&&(alpha == 255)) {
+									if (isCollideCopy(player,vbolt,player->x,player->y,0,0,boltPos[i][j].x,boltPos[i][j].y,0,0)) {
+										Over.life-=hitDmg;
+										if (Over.life <0) Over.life = 0;
+									}
 								}
+								alpha = imFadeIn(vbolt, alpha, 10);
 							}
-							alpha2 = imFadeIn(hbolt, alpha2, 10);
+							else if (boltOn[i][j]) {
+								hbolt->x = boltPos[i][j].x;
+								hbolt->y = boltPos[i][j].y;
+								if (((time - oldTime) >hitDelay)&&(alpha2 == 255)) {
+									if (isCollideCopy(player,hbolt,player->x,player->y,0,0,boltPos[i][j].x,boltPos[i][j].y,0,0)) {
+										Over.life-=hitDmg;
+										if (Over.life <0) Over.life = 0;
+									}
+								}
+								alpha2 = imFadeIn(hbolt, alpha2, 10);
+							}
 						}
 					}
+
+
+					time++;
+
+
+					oslSetAlpha(OSL_FX_TINT, RGBA(253+((2*(100-Over.life))/100), 255-((255*(100-Over.life))/100), 117-((117*(100-Over.life))/100), 255));
+					oslDrawImage(player);
+					oslSetAlpha(OSL_FX_DEFAULT, 0);
+					oslEndDrawing();
+					oslEndFrame();
+					oslSyncFrame();
 				}
 
+				if (redraw == 2) {
+					if (game_quit)	{
+						if (quitScreen(f))	playing = false, Over.quit = true;
+						else	game_quit = false;
+					}
+					else if (lost_game)	playing = false, Over.quit = false;
+					else if (won_game)	playing = false;
+				}
 
-				time++;
+				else if (osl_pad.pressed.start || osl_pad.pressed.circle)	redraw = 2, game_quit = true;
+
+				else if (time >timeLimit/* || osl_pad.held.L*/)	redraw = 2, won_game = true;
+
+				else if (Over.life == 0)	redraw = 2, lost_game = true;
 
 
-				oslSetAlpha(OSL_FX_TINT, RGBA(253+((2*(100-Over.life))/100), 255-((255*(100-Over.life))/100), 117-((117*(100-Over.life))/100), 255));
-				oslDrawImage(player);
-				oslSetAlpha(OSL_FX_DEFAULT, 0);
-				oslEndDrawing();
-				oslEndFrame();
-				oslSyncFrame();
-			}
-			
-			if (redraw == 2) {
-				if (game_quit)	{ if (quitScreen(f))	playing = false, Over.quit = true;	else	game_quit = false; }
-				else if (lost_game)	playing = false, Over.quit = false;
-				else if (won_game)	playing = false;
-			}
-
-			else if (osl_pad.pressed.start || osl_pad.pressed.circle)	redraw = 2, game_quit = true;
-			
-			else if (time >timeLimit/* || osl_pad.held.L*/)	redraw = 2, won_game = true;
-			
-			else if (Over.life == 0)	redraw = 2, lost_game = true;
-			
-			
-			k++;
+				k++;
 			}
 			redraw = 1;
 		}
