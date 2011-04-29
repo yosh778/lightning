@@ -24,6 +24,14 @@ by Yosh alias Hitman_07
 # define LAG_MENU ((HEIGHT - 2*BORDER_MENU - NB_MENU_ELMTS*strHeight) / (NB_MENU_ELMTS - 1))
 # define MENUPOSY (BORDER_MENU + (i)*(strHeight + LAG_MENU))
 
+# define BORDER_SETT 50
+# define LAG_SETT 7  //((HEIGHT - 2*BORDER_SETT - 5*modeHeight) / (5 - 1))
+# define SETTPOSY (BORDER_SETT + BORDER_SETT/2 + (i)*(modeHeight + LAG_SETT))
+/*																			//mode: horizontal display
+# define BORDER_SETT 100
+# define LAG_SETT 16
+# define SETTPOSX (BORDER_SETT + (i)*(strWidth + LAG_SETT))*/
+
 
 //game engine
 # define MOVE_STEP 12
@@ -54,6 +62,7 @@ by Yosh alias Hitman_07
 enum {LEFT, RIGHT, UP, DOWN};
 enum {EASY, NORMAL, HARD, GOD};
 enum {PLAY, SETTINGS, CREDITS, QUIT};
+enum {SET_MODE, SET_COL, SET_LOAD, SET_SAVE};
 
 typedef struct {
 	int x;

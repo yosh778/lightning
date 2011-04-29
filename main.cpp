@@ -19,7 +19,7 @@ PSP_HEAP_SIZE_MAX();
 int main ()
 {
 	bool alphaBool = true;
-	int alpha = 0, bg_col_m = 6, difficulty = NORMAL;
+	int alpha = 0, bg_col_m = 1, difficulty = NORMAL;
 	OSL_COLOR bgstartColor = NULL;
 	Color Bg_col;
 	Bg_col.r = 10;
@@ -35,16 +35,18 @@ int main ()
 	oslIntraFontInit(INTRAFONT_CACHE_MED);
 	OSL_FONT *f = oslLoadFontFile("flash0:/font/ltn0.pgf");
 
-	splashScreen("./res/genesis.jpg", 60*3, 6, RGBA(0,0,0,255));
+	//splashScreen("./res/genesis.jpg", 60*3, 6, RGBA(0,0,0,255));
 
 	OSL_IMAGE *bgstart = NULL, *start = NULL;
-	OSL_SOUND *mstart = NULL;
+	OSL_SOUND *mstart = NULL, *mgame = NULL;
 
 	mstart = oslLoadSoundFileBGM("./res/mstart.bgm",OSL_FMT_STREAM);
+	mgame = oslLoadSoundFileBGM("./res/mgame.bgm",OSL_FMT_STREAM);
 	oslPlaySound(mstart, 0);
 	oslSetSoundLoop(mstart, 1);
 
-	bgstartColor = RGBA(Bg_col.r,Bg_col.g,Bg_col.b,255);
+	//bgstartColor = RGBA(Bg_col.r,Bg_col.g,Bg_col.b,255);
+	bgstartColor = RGBA(6*(Bg_col.r)*bg_col_m,6*(Bg_col.g)*bg_col_m,6*(Bg_col.b)*bg_col_m,255);
 
 	bgstart=oslLoadImageFilePNG("./res/bgstart.png",OSL_IN_RAM,OSL_PF_8888);
 	bgstart->x=0;
@@ -61,7 +63,13 @@ int main ()
 
 		if(osl_pad.pressed.cross || osl_pad.pressed.start)
 		{
-			if (menu(&bg_col_m, &Bg_col, f, &bgstartColor, bgstart,start,&alpha, &difficulty))	oslStopSound(mstart), play(f, difficulty), oslPlaySound(mstart, 0), oslSetSoundLoop(mstart, 1);
+			if (menu(&bg_col_m, &Bg_col, f, &bgstartColor, bgstart,start,&alpha, &difficulty)) {
+				oslStopSound(mstart);
+				play(mgame, f, difficulty);
+				oslPlaySound(mstart, 0);
+				oslSetSoundLoop(mstart, 1);
+			}
+			
 			alpha = 255;
 			alphaBool = false;
 		}
@@ -72,8 +80,7 @@ int main ()
 
 		oslStartDrawing();
 		//oslDrawFillRect(0,0,480,272,bgstartColor);
-		//oslDrawGradientRect(0,0,WIDTH,HEIGHT,bgstartColor,bgstartColor,RGB((Bg_col.r)*bg_col_m,(Bg_col.g)*bg_col_m,(Bg_col.b)*bg_col_m),bgstartColor);
-		oslDrawGradientRect(0,0,WIDTH,HEIGHT,RGB((Bg_col.r)*bg_col_m,(Bg_col.g)*bg_col_m,(Bg_col.b)*bg_col_m),RGB((Bg_col.r)*bg_col_m,(Bg_col.g)*bg_col_m,(Bg_col.b)*bg_col_m),bgstartColor,RGB((Bg_col.r)*bg_col_m,(Bg_col.g)*bg_col_m,(Bg_col.b)*bg_col_m));
+		oslDrawGradientRect(0,0,WIDTH,HEIGHT,bgstartColor,bgstartColor,RGB((Bg_col.r)*bg_col_m,(Bg_col.g)*bg_col_m,(Bg_col.b)*bg_col_m),bgstartColor);
 		oslDrawImage(bgstart);
 		oslSetAlpha(OSL_FX_ALPHA, alpha);
 		oslDrawImage(start);
@@ -85,6 +92,7 @@ int main ()
 		oslSyncFrame();
 	}
 
+	oslDeleteSound(mgame);
 	oslDeleteSound(mstart);
 	oslDeleteImage(bgstart);
 	oslDeleteImage(start);

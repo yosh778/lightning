@@ -17,7 +17,7 @@ int menu(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, OSL
 {
 	bool menu_on = true, launch = false, go_up = false;
 	int alpha, beta = 255, i, strHeight, menuPosX, curpos = 0;
-	char* str_menu[4];
+	char* str_menu[NB_MENU_ELMTS];
 	str_menu[0] = "Play", str_menu[1] = "Settings", str_menu[2] = "Credits", str_menu[3] = "Quit";
 	OSL_IMAGE *menu_bg = NULL;
 	menu_bg = oslLoadImageFilePNG("./res/menu.png",OSL_IN_RAM,OSL_PF_8888);
@@ -43,8 +43,7 @@ int menu(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, OSL
 
 		oslStartDrawing();
 		//oslDrawFillRect(0,0,480,272,*bgstartColor);
-		//oslDrawGradientRect(0,0,WIDTH,HEIGHT,*bgstartColor,*bgstartColor,RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)),*bgstartColor);
-		oslDrawGradientRect(0,0,WIDTH,HEIGHT,RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)),RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)),*bgstartColor,RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)));
+		oslDrawGradientRect(0,0,WIDTH,HEIGHT,*bgstartColor,*bgstartColor,RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)),*bgstartColor);
 		oslSetAlpha(OSL_FX_ALPHA, beta);
 		oslDrawImage(bgstart);
 		oslSetAlpha(OSL_FX_DEFAULT, 0);
@@ -78,8 +77,7 @@ int menu(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, OSL
 
 		oslStartDrawing();
 		//oslDrawFillRect(0,0,480,272,*bgstartColor);
-		//oslDrawGradientRect(0,0,WIDTH,HEIGHT,*bgstartColor,*bgstartColor,RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)),*bgstartColor);
-		oslDrawGradientRect(0,0,WIDTH,HEIGHT,RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)),RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)),*bgstartColor,RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)));
+		oslDrawGradientRect(0,0,WIDTH,HEIGHT,*bgstartColor,*bgstartColor,RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)),*bgstartColor);
 
 
 		for (i=0; i<NB_MENU_ELMTS; i++) {
@@ -103,12 +101,10 @@ int menu(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, OSL
 			launch = true;
 		}
 		else if (curpos == SETTINGS && osl_pad.held.cross) {
-			/*(*bg_col_m)++;
-			*bgstartColor = RGBA(6*(Bg_col->r)*(*bg_col_m),6*(Bg_col->g)*(*bg_col_m),6*(Bg_col->b)*(*bg_col_m),255);*/
+			settings(bg_col_m, Bg_col, f, bgstartColor, difficulty);
+			curpos = 0;
 		}
 		else if (curpos == CREDITS && osl_pad.held.cross) {
-			/*(*bg_col_m)--;
-			*bgstartColor = RGBA(6*(Bg_col->r)*(*bg_col_m),6*(Bg_col->g)*(*bg_col_m),6*(Bg_col->b)*(*bg_col_m),255);*/
 		}
 		else if (curpos == QUIT && osl_pad.pressed.cross) {
 			menu_on = false;
@@ -119,6 +115,7 @@ int menu(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, OSL
 
 		if (alpha <112)	go_up = true, alpha = 112;
 		else if (alpha > 255)	go_up = false, alpha = 255;
+		
 	}
 
 	oslSetKeyAutorepeat(NULL,0,0);
