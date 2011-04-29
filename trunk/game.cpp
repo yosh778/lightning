@@ -301,8 +301,9 @@ Result gameLevel(OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, in
 
 				if (redraw == 2) {
 					if (game_quit)	{
-						if (quitScreen(mgame, f))	playing = false, Over.quit = true;
-						else	game_quit = false;
+						oslPauseSound(mgame, 1);
+						if (quitScreen(f))	playing = false, Over.quit = true;
+						else	game_quit = false, oslPauseSound(mgame, 0);
 					}
 					else if (lost_game)	playing = false, Over.quit = false;
 					else if (won_game)	playing = false;
