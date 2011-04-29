@@ -22,9 +22,9 @@ int main ()
 	int alpha = 0, bg_col_m = 1, difficulty = NORMAL;
 	OSL_COLOR bgstartColor = NULL;
 	Color Bg_col;
-	Bg_col.r = 10;
-	Bg_col.g = 5;
-	Bg_col.b = 39;
+	Bg_col.r = 182;
+	Bg_col.g = 151;
+	Bg_col.b = 191;
 	
 	oslInit(0);
 
@@ -35,7 +35,7 @@ int main ()
 	oslIntraFontInit(INTRAFONT_CACHE_MED);
 	OSL_FONT *f = oslLoadFontFile("flash0:/font/ltn0.pgf");
 
-	//splashScreen("./res/genesis.jpg", 60*3, 6, RGBA(0,0,0,255));
+	splashScreen("./res/genesis.jpg", 60*3, 6, RGBA(0,0,0,255));
 
 	OSL_IMAGE *bgstart = NULL, *start = NULL;
 	OSL_SOUND *mstart = NULL, *mgame = NULL;
@@ -46,7 +46,7 @@ int main ()
 	oslSetSoundLoop(mstart, 1);
 
 	//bgstartColor = RGBA(Bg_col.r,Bg_col.g,Bg_col.b,255);
-	bgstartColor = RGBA(6*(Bg_col.r)*bg_col_m,6*(Bg_col.g)*bg_col_m,6*(Bg_col.b)*bg_col_m,255);
+	bgstartColor = RGBA(6*(Bg_col.r)*bg_col_m,6*(Bg_col.g)*bg_col_m,6*(Bg_col.b)*bg_col_m,255);	//RGB(68,126,125);
 
 	bgstart=oslLoadImageFilePNG("./res/bgstart.png",OSL_IN_RAM,OSL_PF_8888);
 	bgstart->x=0;

@@ -227,8 +227,8 @@ void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor
 	
 	bool menu_on = true, go_up = false;
 	int alpha, beta = 0, i, strHeight, modeHeight, settPosX = WIDTH/2, set_mode = false, titleHeight, menuPosX, curpos = 1;
-	char *str_menu[5], *str_mode[4], *mod_color = "<Change color theme>";
-	str_menu[0] = "Settings", str_menu[1] = "Difficulty", str_menu[2] = "Change color theme", str_menu[3] = "Load", str_menu[4] = "Save";
+	char *str_menu[4], *str_mode[4], *mod_color = "<-Change menu color->";
+	str_menu[0] = "Settings", str_menu[1] = "Difficulty", str_menu[2] = "Change menu color", str_menu[3] = "Help"; //str_menu[3] = "Load", str_menu[4] = "Save";
 	str_mode[0] = "Easy", str_mode[1] = "Normal", str_mode[2] = "Hard", str_mode[3] = "God";
 	
 	menuPosX = WIDTH/2;
@@ -288,13 +288,13 @@ void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor
 		if (osl_pad.pressed.up)
 		{
 			curpos--;
-			if (curpos < 1)	curpos = 4;
+			if (curpos < 1)	curpos = 3;
 		}
 
 		if (osl_pad.pressed.down)
 		{
 			curpos++;
-			if (curpos > 4)	curpos = 1;
+			if (curpos >3)	curpos = 1;
 		}
 		}
 			
@@ -310,13 +310,13 @@ void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor
 		i = 0;
 		oslIntraFontSetStyle(f, 1.25f,RGBA(224,224,224,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
 		oslDrawString(settPosX, BORDER_SETT + 10, str_menu[0]);
-		for (i=1; i<5; i++) {
+		for (i=1; i<4; i++) {
 			if ((curpos == i)&& (curpos != SET_COL+1)) {
 				oslIntraFontSetStyle(f, 1.f,RGBA(alpha,alpha,alpha,255), RGBA((255-alpha)/3,(255-alpha)/3,(255-alpha)/3,128),INTRAFONT_ALIGN_CENTER);
 				oslDrawString(settPosX, SETTPOSY, str_menu[i]);
 			}
 			else if ((i == SET_COL+1)&& (curpos == SET_COL+1)) {
-				oslIntraFontSetStyle(f, 1.f,RGBA(alpha,alpha,alpha,255), RGBA((255-alpha)/3,(255-alpha)/3,(255-alpha)/3,128),INTRAFONT_ALIGN_CENTER);
+				oslIntraFontSetStyle(f, 0.9f,RGBA(alpha,alpha,alpha,255), RGBA((255-alpha)/3,(255-alpha)/3,(255-alpha)/3,128),INTRAFONT_ALIGN_CENTER);
 				oslDrawString(settPosX, SETTPOSY, mod_color);
 			}
 			else {
@@ -364,10 +364,11 @@ void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor
 		}	
 			*bgstartColor = RGBA(6*(Bg_col->r)*(*bg_col_m),6*(Bg_col->g)*(*bg_col_m),6*(Bg_col->b)*(*bg_col_m),255);
 		}
-		else if (curpos == SET_LOAD && osl_pad.held.cross) {
+		/*else if (curpos == SET_LOAD+1 && osl_pad.pressed.cross) {
+		
 		}
-		else if (curpos == SET_SAVE && osl_pad.pressed.cross) {
-		}
+		else if (curpos == SET_SAVE+1 && osl_pad.pressed.cross) {
+		}*/
 		if (!set_mode && osl_pad.pressed.circle) {
 			menu_on = false;
 		}
@@ -381,3 +382,63 @@ void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor
 	}
 	
 }
+
+/*
+int load(Color *Bg_col, int *difficulty)
+{
+    FILE* file = NULL;
+    char fileline[1*(1+1)+3*(3+1)+1] = {0};
+	char *bg_col[3];
+    int i, j, nb;
+
+    file = fopen("res/lightning", "r");
+    if (file == NULL)
+        return 0;
+
+
+    if (fgets(fileline, (14), file) == NULL)
+        return false;
+	
+	*difficulty = atoi(fileline[0]);
+	
+	while (fileline[i] != '/') {i++;}
+	i++;
+	while (fileline[i] != '_') {
+		bg_col[0] += fileline[i];
+		i++;
+	}
+	i++;
+	while (fileline[i] != '_') {
+		bg_col[1] += fileline[i];
+		i++;
+	}
+	i++;
+	while (fileline[i] != '.') {
+		bg_col[2] += fileline[i];
+		i++;
+	}
+	
+
+    fclose(file);
+    return true;
+}
+
+int save(Color *Bg_col, int *difficulty)
+{
+    FILE* file = NULL;
+    int i, j, nb;
+
+    file = fopen("res/lightning", "r+");
+    if (file == NULL)
+        return false;
+	
+	fprintf(file, "%d/", *difficulty);
+	fprintf(file, "%d_", Bg_col->r);
+	fprintf(file, "%d_", Bg_col->g);
+	fprintf(file, "%d.", Bg_col->b);
+	
+
+    fclose(file);
+    return true;
+}
+*/
