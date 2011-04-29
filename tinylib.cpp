@@ -171,10 +171,10 @@ bool overScreen(OSL_FONT *f, bool over) {
 	return true;
 }
 
-bool quitScreen(OSL_SOUND *mgame, OSL_FONT *f) {
+bool quitScreen(OSL_FONT *f) {
 
 	bool quit = false, end = false;
-	int frame = 0, frames = 13, height[2];
+	int frame = 0, height[2];
 	char* str_quit[3];
 	str_quit[0] = "Quit Game ?", str_quit[1] = "X: Yes.", str_quit[2] = "O: No.";
 
@@ -184,19 +184,22 @@ bool quitScreen(OSL_SOUND *mgame, OSL_FONT *f) {
 	oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,64), RGBA(0,0,0,64),INTRAFONT_ALIGN_LEFT);
 	oslSetFont(f);
 	height[1] = osl_curFont->charHeight;
-	
-	//oslPauseSound(mgame, 1);
-	
-	oslReadKeys();
 
-	while (frame <frames) {
+
+	oslReadKeys();
+	while (!(end || osl_quit)) {
+		oslReadKeys();
+		
+		if (osl_pad.pressed.cross)	quit = true, end= true;
+		else if (osl_pad.pressed.square || osl_pad.pressed.circle || osl_pad.pressed.start)	quit = false, end= true;
+		
 		oslStartDrawing();
-		oslSetAlpha(OSL_FX_ALPHA, 64);
+		oslSetAlpha(OSL_FX_ALPHA, frame);
 		oslDrawFillRect(0,0,480,272,RGBA(0,0,0,255));
-		oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,255), RGBA(0,0,0,64),INTRAFONT_ALIGN_CENTER);
+		oslIntraFontSetStyle(f, 1.f,RGBA(255,255,255,frame), RGBA(0,0,0,frame),INTRAFONT_ALIGN_CENTER);
 		oslSetFont(f);
-		oslDrawString(WIDTH/2, HEIGHT/2, str_quit[0]);
-		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,64),INTRAFONT_ALIGN_LEFT);
+		oslDrawString(WIDTH/2, HEIGHT/2 - 10, str_quit[0]);
+		oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,frame), RGBA(0,0,0,frame),INTRAFONT_ALIGN_CENTER);
 		oslSetFont(f);
 		oslDrawString(WIDTH/2, HEIGHT/2 + height[0], str_quit[1]);
 		oslDrawString(WIDTH/2, HEIGHT/2 + height[0] + height[1], str_quit[2]);
@@ -204,21 +207,11 @@ bool quitScreen(OSL_SOUND *mgame, OSL_FONT *f) {
 		oslEndDrawing();
 		oslEndFrame();
 		oslSyncFrame();
-		frame++;
+		
+		frame+=12;
+		if (frame >255)	frame = 255;
+		
 	}
-
-	oslReadKeys();
-	while (!(end || osl_quit)) {
-
-		oslReadKeys();
-
-		if (osl_pad.pressed.cross)	quit = true, end= true;
-		else if (osl_pad.pressed.square || osl_pad.pressed.circle)	quit = false, end= true;
-		oslEndFrame();
-		oslSyncFrame();
-
-	}
-	//oslPauseSound(mgame, 0);
 
 	return quit;
 }
