@@ -13,14 +13,12 @@ by Yosh alias Hitman_07
 #include "tinylib.h"
 
 
-int play(OSL_FONT *f, int mode)
+int play(OSL_SOUND *mgame, OSL_FONT *f, int mode)
 {
 	int hitDmg, level = 1;
 	bool sublevel = false;
 	OSL_COLOR bgColor = NULL;
 	bgColor = RGBA(R_BG,G_BG,B_BG,255);
-	OSL_SOUND *mgame = NULL;
-	mgame = oslLoadSoundFileBGM("./res/mgame.bgm",OSL_FMT_STREAM);
 	OSL_IMAGE *player = NULL;
 	player = oslLoadImageFilePNG("./res/player.png",OSL_IN_RAM,OSL_PF_8888);
 	player->x = (WIDTH - player->sizeX) / 2;
@@ -55,7 +53,6 @@ int play(OSL_FONT *f, int mode)
 
 
 	oslStopSound(mgame);
-	oslDeleteSound(mgame);
 	oslDeleteImage(player);
 
 	return 1;
@@ -315,7 +312,7 @@ Result gameLevel(OSL_FONT *f, int hitDmg, int level, bool sublevel, OSL_COLOR bg
 
 				else if (osl_pad.pressed.start || osl_pad.pressed.circle)	redraw = 2, game_quit = true;
 
-				else if (time >timeLimit/* || osl_pad.held.L*/)	redraw = 2, won_game = true;
+				else if (time >timeLimit || osl_pad.held.L)	redraw = 2, won_game = true;
 
 				else if (Over.life == 0)	redraw = 2, lost_game = true;
 

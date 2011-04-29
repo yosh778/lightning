@@ -219,3 +219,149 @@ bool quitScreen(OSL_FONT *f) {
 	return quit;
 }
 
+void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, int *difficulty) {
+	
+	bool menu_on = true, go_up = false;
+	int alpha, beta = 0, i, strHeight, modeHeight, settPosX = WIDTH/2, set_mode = false, titleHeight, menuPosX, curpos = 1;
+	char *str_menu[5], *str_mode[4];
+	str_menu[0] = "Settings", str_menu[1] = "Difficulty", str_menu[2] = "Change color theme", str_menu[3] = "Load", str_menu[4] = "Save";
+	str_mode[0] = "Easy", str_mode[1] = "Normal", str_mode[2] = "Hard", str_mode[3] = "God";
+	
+	menuPosX = WIDTH/2;
+
+	oslIntraFontSetStyle(f, 1.25f,RGBA(255,255,255,255), RGBA(0,0,0,255),INTRAFONT_ALIGN_CENTER);
+	oslSetFont(f);
+	titleHeight = osl_curFont->charHeight;
+	oslIntraFontSetStyle(f, 0.9f,RGBA(255,255,255,255), RGBA(0,0,0,255),INTRAFONT_ALIGN_CENTER);
+	oslSetFont(f);
+	strHeight = osl_curFont->charHeight;
+	oslIntraFontSetStyle(f, 0.85f,RGBA(192,192,192,255), RGBA(0,0,0,128),INTRAFONT_ALIGN_CENTER);
+	oslSetFont(f);
+	modeHeight = osl_curFont->charHeight;
+	
+	oslSetKeyAnalogToDPad(PAD_SENS);
+	
+
+/*
+	while(beta < 255)
+	{
+		beta+=10;
+
+		if (beta < 0)	beta = 0;
+
+		oslStartDrawing();
+		oslSetAlpha(OSL_FX_ALPHA, beta);
+		//oslDrawFillRect(0,0,480,272,*bgstartColor);
+		oslDrawGradientRect(0,0,WIDTH,HEIGHT,*bgstartColor,*bgstartColor,RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)),*bgstartColor);
+		oslSetAlpha(OSL_FX_DEFAULT, 0);
+		oslEndDrawing();
+		oslEndFrame();
+		oslSyncFrame();
+	}
+*/
+
+	alpha = 255;
+
+	while (menu_on) {
+
+		oslReadKeys();
+
+		if (set_mode) {
+		if (osl_pad.pressed.up)
+		{
+			(*difficulty)--;
+			if ((*difficulty) < 0)	(*difficulty) = 3;
+		}
+
+		if (osl_pad.pressed.down)
+		{
+			(*difficulty)++;
+			if ((*difficulty) > 3)	(*difficulty) = 0;
+		}
+		}
+		
+		else {
+		if (osl_pad.pressed.up)
+		{
+			curpos--;
+			if (curpos < 1)	curpos = 4;
+		}
+
+		if (osl_pad.pressed.down)
+		{
+			curpos++;
+			if (curpos > 4)	curpos = 1;
+		}
+		}
+			
+			
+			
+
+		oslStartDrawing();
+		//oslDrawFillRect(0,0,480,272,*bgstartColor);
+		oslDrawGradientRect(0,0,WIDTH,HEIGHT,*bgstartColor,*bgstartColor,RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)),*bgstartColor);
+
+		
+		if (!set_mode) {
+		i = 0;
+		oslIntraFontSetStyle(f, 1.25f,RGBA(224,224,224,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
+		oslDrawString(settPosX, BORDER_SETT + 10, str_menu[0]);
+		for (i=1; i<5; i++) {
+			if (curpos == i) {
+				oslIntraFontSetStyle(f, 0.9f,RGBA(alpha,alpha,alpha,255), RGBA((255-alpha)/3,(255-alpha)/3,(255-alpha)/3,128),INTRAFONT_ALIGN_CENTER);
+				oslDrawString(settPosX, SETTPOSY, str_menu[i]);
+			}
+			else {
+				oslIntraFontSetStyle(f, 0.85f,RGBA(192,192,192,255), RGBA(0,0,0,128),INTRAFONT_ALIGN_CENTER);
+				oslDrawString(settPosX, SETTPOSY, str_menu[i]);
+			}
+		}
+		}
+		
+		else {
+		for (i=EASY; i<GOD+1; i++) {
+			if (*difficulty == i) {
+				oslIntraFontSetStyle(f, 0.95f,RGBA(alpha,alpha,alpha,255), RGBA((255-alpha)/3,(255-alpha)/3,(255-alpha)/3,128),INTRAFONT_ALIGN_CENTER);
+				oslDrawString(menuPosX, MENUPOSY, str_mode[i]);
+			}
+			else {
+				oslIntraFontSetStyle(f, 0.9f,RGBA(192,192,192,255), RGBA(0,0,0,128),INTRAFONT_ALIGN_CENTER);
+				oslDrawString(menuPosX, MENUPOSY, str_mode[i]);
+				//oslDrawString(SETTPOSX, settPosY, str_mode[i]);
+			}
+		}
+		}
+		
+		oslEndDrawing();
+		oslEndFrame();
+		oslSyncFrame();
+
+		if (!set_mode && curpos == SET_MODE+1 && osl_pad.pressed.cross) {
+			set_mode = true;
+		}
+		else if (set_mode && (osl_pad.pressed.circle || osl_pad.pressed.cross)) {
+			set_mode = false;
+		}
+		else if (curpos == SET_COL && osl_pad.held.cross) {
+			/*(*bg_col_m)++;
+			*bgstartColor = RGBA(6*(Bg_col->r)*(*bg_col_m),6*(Bg_col->g)*(*bg_col_m),6*(Bg_col->b)*(*bg_col_m),255);*/
+		}
+		else if (curpos == SET_LOAD && osl_pad.held.cross) {
+			/*(*bg_col_m)--;
+			*bgstartColor = RGBA(6*(Bg_col->r)*(*bg_col_m),6*(Bg_col->g)*(*bg_col_m),6*(Bg_col->b)*(*bg_col_m),255);*/
+		}
+		else if (curpos == SET_SAVE && osl_pad.pressed.cross) {
+		}
+		else if (!set_mode && osl_pad.pressed.circle) {
+			menu_on = false;
+		}
+
+		if (go_up)	alpha+= 5;
+		else	alpha-= 5;
+
+		if (alpha <112)	go_up = true, alpha = 112;
+		else if (alpha > 255)	go_up = false, alpha = 255;
+		
+	}
+	
+}
