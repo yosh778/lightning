@@ -28,7 +28,7 @@ int play(Color *Bg_col, int *bg_col_m, OSL_SOUND *mgame, OSL_FONT *f, int mode)
 
 	oslSetKeyAnalogToDPad(PAD_SENS);
 
-	oslPlaySound(mgame, 0);
+	oslPlaySound(mgame, 1);
 	oslSetSoundLoop(mgame, 1);
 
 
