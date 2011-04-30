@@ -42,11 +42,13 @@ int play(Color *Bg_col, int *bg_col_m, OSL_SOUND *mgame, OSL_FONT *f, int mode)
 		startScreen(f, level, sublevel);
 		Over = gameLevel(mgame, Bg_col, bg_col_m, f, hitDmg, level, sublevel, bgColor, player);
 
-		if (Over.life >0) {
-			if (sublevel)	level ++;
-			sublevel = !sublevel;
+		if (!Over.quit) {
+			if (Over.life >0) {
+				if (sublevel)	level ++;
+				sublevel = !sublevel;
+			}
+			else	overScreen(f, false);
 		}
-		else if (!Over.quit)	overScreen(f, false);
 	}
 
 	if (level >4)	overScreen(f, true);
