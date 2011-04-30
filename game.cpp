@@ -311,7 +311,7 @@ Result gameLevel(OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, in
 
 				else if (osl_pad.pressed.start || osl_pad.pressed.circle)	redraw = 2, game_quit = true;
 
-				else if (time >timeLimit || osl_pad.held.L)	redraw = 2, won_game = true;
+				else if (time >timeLimit /*|| osl_pad.held.L*/)	redraw = 2, won_game = true;
 
 				else if (Over.life == 0)	redraw = 2, lost_game = true;
 
