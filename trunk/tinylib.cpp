@@ -189,10 +189,10 @@ bool quitScreen(OSL_FONT *f) {
 	oslReadKeys();
 	while (!(end || osl_quit)) {
 		oslReadKeys();
-		
+
 		if (osl_pad.pressed.cross)	quit = true, end= true;
 		else if (osl_pad.pressed.square || osl_pad.pressed.circle || osl_pad.pressed.start)	quit = false, end= true;
-		
+
 		oslStartDrawing();
 		oslSetAlpha(OSL_FX_ALPHA, frame);
 		oslDrawFillRect(0,0,480,272,RGBA(0,0,0,255));
@@ -207,23 +207,23 @@ bool quitScreen(OSL_FONT *f) {
 		oslEndDrawing();
 		oslEndFrame();
 		oslSyncFrame();
-		
+
 		frame+=12;
 		if (frame >255)	frame = 255;
-		
+
 	}
 
 	return quit;
 }
 
 void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, int *difficulty) {
-	
+
 	bool menu_on = true, go_up = false;
 	int alpha, /*beta = 0, */i, strHeight, modeHeight, settPosX = WIDTH/2, set_mode = false, titleHeight, menuPosX, curpos = 1;
 	char *str_menu[4], *str_mode[4], *mod_color = "<-Change menu color->";
 	str_menu[0] = "Settings", str_menu[1] = "Difficulty", str_menu[2] = "Change menu color", str_menu[3] = "Help"; //str_menu[3] = "Load", str_menu[4] = "Save";
 	str_mode[0] = "Easy", str_mode[1] = "Normal", str_mode[2] = "Hard", str_mode[3] = "God";
-	
+
 	menuPosX = WIDTH/2;
 
 	oslIntraFontSetStyle(f, 1.25f,RGBA(255,255,255,255), RGBA(0,0,0,255),INTRAFONT_ALIGN_CENTER);
@@ -235,27 +235,27 @@ void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor
 	oslIntraFontSetStyle(f, 0.85f,RGBA(192,192,192,255), RGBA(0,0,0,128),INTRAFONT_ALIGN_CENTER);
 	oslSetFont(f);
 	modeHeight = osl_curFont->charHeight;
-	
+
 	oslSetKeyAnalogToDPad(PAD_SENS);
-	
 
-/*
-	while(beta < 255)
-	{
-		beta+=10;
 
-		if (beta < 0)	beta = 0;
+	/*
+		while(beta < 255)
+		{
+			beta+=10;
 
-		oslStartDrawing();
-		oslSetAlpha(OSL_FX_ALPHA, beta);
-		//oslDrawFillRect(0,0,480,272,*bgstartColor);
-		oslDrawGradientRect(0,0,WIDTH,HEIGHT,*bgstartColor,*bgstartColor,RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)),*bgstartColor);
-		oslSetAlpha(OSL_FX_DEFAULT, 0);
-		oslEndDrawing();
-		oslEndFrame();
-		oslSyncFrame();
-	}
-*/
+			if (beta < 0)	beta = 0;
+
+			oslStartDrawing();
+			oslSetAlpha(OSL_FX_ALPHA, beta);
+			//oslDrawFillRect(0,0,480,272,*bgstartColor);
+			oslDrawGradientRect(0,0,WIDTH,HEIGHT,*bgstartColor,*bgstartColor,RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)),*bgstartColor);
+			oslSetAlpha(OSL_FX_DEFAULT, 0);
+			oslEndDrawing();
+			oslEndFrame();
+			oslSyncFrame();
+		}
+	*/
 
 	alpha = 255;
 
@@ -264,75 +264,75 @@ void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor
 		oslReadKeys();
 
 		if (set_mode) {
-		if (osl_pad.pressed.up)
-		{
-			(*difficulty)--;
-			if ((*difficulty) < 0)	(*difficulty) = 3;
+			if (osl_pad.pressed.up)
+			{
+				(*difficulty)--;
+				if ((*difficulty) < 0)	(*difficulty) = 3;
+			}
+
+			if (osl_pad.pressed.down)
+			{
+				(*difficulty)++;
+				if ((*difficulty) > 3)	(*difficulty) = 0;
+			}
 		}
 
-		if (osl_pad.pressed.down)
-		{
-			(*difficulty)++;
-			if ((*difficulty) > 3)	(*difficulty) = 0;
-		}
-		}
-		
 		else {
-		if (osl_pad.pressed.up)
-		{
-			curpos--;
-			if (curpos < 1)	curpos = 3;
+			if (osl_pad.pressed.up)
+			{
+				curpos--;
+				if (curpos < 1)	curpos = 3;
+			}
+
+			if (osl_pad.pressed.down)
+			{
+				curpos++;
+				if (curpos >3)	curpos = 1;
+			}
 		}
 
-		if (osl_pad.pressed.down)
-		{
-			curpos++;
-			if (curpos >3)	curpos = 1;
-		}
-		}
-			
-			
-			
+
+
 
 		oslStartDrawing();
 		//oslDrawFillRect(0,0,480,272,*bgstartColor);
 		oslDrawGradientRect(0,0,WIDTH,HEIGHT,*bgstartColor,*bgstartColor,RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)),*bgstartColor);
 
-		
+
 		if (!set_mode) {
-		i = 0;
-		oslIntraFontSetStyle(f, 1.25f,RGBA(224,224,224,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
-		oslDrawString(settPosX, BORDER_SETT + 10, str_menu[0]);
-		for (i=1; i<4; i++) {
-			if ((curpos == i)&& (curpos != SET_COL+1)) {
-				oslIntraFontSetStyle(f, 1.f,RGBA(alpha,alpha,alpha,255), RGBA((255-alpha)/3,(255-alpha)/3,(255-alpha)/3,128),INTRAFONT_ALIGN_CENTER);
-				oslDrawString(settPosX, SETTPOSY, str_menu[i]);
-			}
-			else if ((i == SET_COL+1)&& (curpos == SET_COL+1)) {
-				oslIntraFontSetStyle(f, 0.9f,RGBA(alpha,alpha,alpha,255), RGBA((255-alpha)/3,(255-alpha)/3,(255-alpha)/3,128),INTRAFONT_ALIGN_CENTER);
-				oslDrawString(settPosX, SETTPOSY, mod_color);
-			}
-			else {
-				oslIntraFontSetStyle(f, 0.85f,RGBA(192,192,192,255), RGBA(0,0,0,128),INTRAFONT_ALIGN_CENTER);
-				oslDrawString(settPosX, SETTPOSY, str_menu[i]);
+			i = 0;
+			oslIntraFontSetStyle(f, 1.25f,RGBA(224,224,224,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
+			oslDrawString(settPosX, BORDER_SETT + 10, str_menu[0]);
+			for (i=1; i<4; i++) {
+				if ((curpos == i)&& (curpos != SET_COL+1)) {
+					oslIntraFontSetStyle(f, 1.f,RGBA(alpha,alpha,alpha,255), RGBA((255-alpha)/3,(255-alpha)/3,(255-alpha)/3,128),INTRAFONT_ALIGN_CENTER);
+					oslDrawString(settPosX, SETTPOSY, str_menu[i]);
+				}
+				else if ((i == SET_COL+1)&& (curpos == SET_COL+1)) {
+					oslIntraFontSetStyle(f, 0.9f,RGBA(alpha,alpha,alpha,255), RGBA((255-alpha)/3,(255-alpha)/3,(255-alpha)/3,128),INTRAFONT_ALIGN_CENTER);
+					oslDrawString(settPosX, SETTPOSY, mod_color);
+				}
+				else {
+					oslIntraFontSetStyle(f, 0.85f,RGBA(192,192,192,255), RGBA(0,0,0,128),INTRAFONT_ALIGN_CENTER);
+					oslDrawString(settPosX, SETTPOSY, str_menu[i]);
+				}
 			}
 		}
-		}
-		
+
 		else {
-		for (i=EASY; i<GOD+1; i++) {
-			if (*difficulty == i) {
-				oslIntraFontSetStyle(f, 0.95f,RGBA(alpha,alpha,alpha,255), RGBA((255-alpha)/3,(255-alpha)/3,(255-alpha)/3,128),INTRAFONT_ALIGN_CENTER);
-				oslDrawString(menuPosX, MENUPOSY, str_mode[i]);
-			}
-			else {
-				oslIntraFontSetStyle(f, 0.9f,RGBA(192,192,192,255), RGBA(0,0,0,128),INTRAFONT_ALIGN_CENTER);
-				oslDrawString(menuPosX, MENUPOSY, str_mode[i]);
-				//oslDrawString(SETTPOSX, settPosY, str_mode[i]);
+			for (i=EASY; i<GOD+1; i++) {
+				if (*difficulty == i) {
+					oslIntraFontSetStyle(f, 0.95f,RGBA(alpha,alpha,alpha,255), RGBA((255-alpha)/3,(255-alpha)/3,(255-alpha)/3,128),INTRAFONT_ALIGN_CENTER);
+					oslDrawString(menuPosX, MENUPOSY, str_mode[i]);
+				}
+				else {
+					oslIntraFontSetStyle(f, 0.9f,RGBA(192,192,192,255), RGBA(0,0,0,128),INTRAFONT_ALIGN_CENTER);
+					oslDrawString(menuPosX, MENUPOSY, str_mode[i]);
+					//oslDrawString(SETTPOSX, settPosY, str_mode[i]);
+				}
 			}
 		}
-		}
-		
+
 		oslEndDrawing();
 		oslEndFrame();
 		oslSyncFrame();
@@ -344,21 +344,21 @@ void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor
 			set_mode = false;
 		}
 		else if (curpos == SET_COL+1) {
-		if (osl_pad.pressed.left)
-		{
-			(*bg_col_m)--;
-			if (*bg_col_m <1)	(*bg_col_m) = 1;
-			*bgstartColor = RGBA(6*(Bg_col->r)*(*bg_col_m),6*(Bg_col->g)*(*bg_col_m),6*(Bg_col->b)*(*bg_col_m),255);
-		}
-		else if (osl_pad.pressed.right)
-		{
-			(*bg_col_m)++;
-			if (*bg_col_m >100)	(*bg_col_m) = 100;
-		}	
+			if (osl_pad.pressed.left)
+			{
+				(*bg_col_m)--;
+				if (*bg_col_m <1)	(*bg_col_m) = 1;
+				*bgstartColor = RGBA(6*(Bg_col->r)*(*bg_col_m),6*(Bg_col->g)*(*bg_col_m),6*(Bg_col->b)*(*bg_col_m),255);
+			}
+			else if (osl_pad.pressed.right)
+			{
+				(*bg_col_m)++;
+				if (*bg_col_m >100)	(*bg_col_m) = 100;
+			}
 			*bgstartColor = RGBA(6*(Bg_col->r)*(*bg_col_m),6*(Bg_col->g)*(*bg_col_m),6*(Bg_col->b)*(*bg_col_m),255);
 		}
 		/*else if (curpos == SET_LOAD+1 && osl_pad.pressed.cross) {
-		
+
 		}
 		else if (curpos == SET_SAVE+1 && osl_pad.pressed.cross) {
 		}*/
@@ -371,9 +371,9 @@ void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor
 
 		if (alpha <112)	go_up = true, alpha = 112;
 		else if (alpha > 255)	go_up = false, alpha = 255;
-		
+
 	}
-	
+
 }
 
 /*
@@ -391,9 +391,9 @@ int load(Color *Bg_col, int *difficulty)
 
     if (fgets(fileline, (14), file) == NULL)
         return false;
-	
+
 	*difficulty = atoi(fileline[0]);
-	
+
 	while (fileline[i] != '/') {i++;}
 	i++;
 	while (fileline[i] != '_') {
@@ -410,7 +410,7 @@ int load(Color *Bg_col, int *difficulty)
 		bg_col[2] += fileline[i];
 		i++;
 	}
-	
+
 
     fclose(file);
     return true;
@@ -424,12 +424,12 @@ int save(Color *Bg_col, int *difficulty)
     file = fopen("res/lightning", "r+");
     if (file == NULL)
         return false;
-	
+
 	fprintf(file, "%d/", *difficulty);
 	fprintf(file, "%d_", Bg_col->r);
 	fprintf(file, "%d_", Bg_col->g);
 	fprintf(file, "%d.", Bg_col->b);
-	
+
 
     fclose(file);
     return true;
