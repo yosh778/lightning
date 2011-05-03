@@ -52,12 +52,12 @@ int play(OSL_SOUND *congrats, OSL_SOUND *lost, OSL_SOUND *won, OSL_SOUND *appear
 			else	oslPlaySound(lost, 7), overScreen(f, false);
 		}
 	}
-	
-	
+
+
 	oslStopSound(mgame);
 	if (level >4)	oslPlaySound(congrats, 6), overScreen(f, true);
 
-	
+
 	oslDeleteImage(player);
 
 	return 1;
@@ -67,7 +67,7 @@ int play(OSL_SOUND *congrats, OSL_SOUND *lost, OSL_SOUND *won, OSL_SOUND *appear
 Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, int hitDmg, int level, bool sublevel, OSL_COLOR bgColor, OSL_IMAGE *player) {
 
 	bool playing = true, tboltOn[4] = {false}, game_quit = false, lost_game = false, won_game = false, critic_on = false;
-	int i, j, k, alpha = 255, alpha2 = alpha, delta[4] = {alpha}, redraw = 1, boltOn[4][4] = {{0}}, time = 0, oldTime = 0, timeLimit;
+	int i, j, k, m, alpha = 255, alpha2 = alpha, delta[4] = {alpha}, redraw = 1, boltOn[4][4] = {{0}}, time = 0, oldTime = 0, timeLimit;
 	int nbBolt[4], maxBoltX, maxBoltY, n, hitDelay = HITUNIT;
 	OSL_IMAGE *hbolt = NULL, *vbolt = NULL, *tbolt1 = NULL, *tbolt2 = NULL;
 	hbolt=oslLoadImageFilePNG("./res/hbolt.png",OSL_IN_RAM,OSL_PF_8888);
@@ -155,6 +155,7 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 		}
 
 		// activates random bolts's appearance for each side, depending on maximum number of bolts set above for each side
+		m = 0;
 		for (i=LEFT; i<DOWN+1; i++) {
 			n = 0;
 			for (j=0; j<4; j++) {
@@ -163,7 +164,37 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 				else if ((n <nbBolt[i]) && (i >RIGHT))	boltOn[i][j] = rand()%2;
 				if (boltOn[i][j])	n++;
 			}
+			m+= n;
 		}
+
+		// erases one bolt if all of them got activated
+		if (m >8) {
+			i = rand()%4;
+
+			if (i<UP)	j = rand()%2;
+			else {
+				j = rand()%4;
+				if (j == 2)	j = 0;
+				else if (j == 1)	j = 3; }
+
+			if (i == LEFT)	{
+				if (j == 0)	boltOn[i][j] = 0, boltOn[UP][0] = 0;
+				else	boltOn[i][j] = 0, boltOn[DOWN][0] = 0;
+			}
+			else if (i == RIGHT)	{
+				if (j == 0)	boltOn[i][j] = 0, boltOn[UP][3] = 0;
+				else	boltOn[i][j] = 0, boltOn[DOWN][3] = 0;
+			}
+			else if (i == UP && (j == 0 || j == 3))	{
+				if (j == 0)	boltOn[i][j] = 0, boltOn[LEFT][0] = 0;
+				else	boltOn[i][j] = 0, boltOn[RIGHT][0] = 0;
+			}
+			else if (i == DOWN && (j == 0 || j == 3))	{
+				if (j == 0)	boltOn[i][j] = 0, boltOn[LEFT][1] = 0;
+				else	boltOn[i][j] = 0, boltOn[RIGHT][1] = 0;
+			}
+		}
+
 
 		for (i=0; i<4; i++) {
 			tboltOn[i] = false;
@@ -309,7 +340,7 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 					oslEndFrame();
 					oslSyncFrame();
 				}
-				
+
 				if (Over.life <30 && !critic_on)	oslPlaySound(critic, 0), critic_on = true;
 				if (redraw == 2) {
 					if (game_quit)	{
