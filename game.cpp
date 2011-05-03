@@ -13,7 +13,7 @@ by Yosh alias Hitman_07
 #include "tinylib.h"
 
 
-int play(Color *Bg_col, int *bg_col_m, OSL_SOUND *mgame, OSL_FONT *f, int mode)
+int play(OSL_SOUND *congrats, OSL_SOUND *lost, OSL_SOUND *won, OSL_SOUND *appear, OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel, OSL_SOUND *critic, OSL_SOUND *hurt, Color *Bg_col, int *bg_col_m, OSL_SOUND *mgame, OSL_FONT *f, int mode)
 {
 	int hitDmg, level = 1;
 	bool sublevel = false;
@@ -38,32 +38,35 @@ int play(Color *Bg_col, int *bg_col_m, OSL_SOUND *mgame, OSL_FONT *f, int mode)
 	else	hitDmg = HITDMG*8;
 
 
-	while (level <5 && !Over.quit) {
+	while (level <5 && !Over.quit && !osl_quit) {
 		startScreen(f, level, sublevel);
-		Over = gameLevel(mgame, Bg_col, bg_col_m, f, hitDmg, level, sublevel, bgColor, player);
+		if ((level == 1) && !sublevel)	oslPlaySound(appear, 2);
+		Over = gameLevel(quit_open, quit_close, cancel, critic, hurt, mgame, Bg_col, bg_col_m, f, hitDmg, level, sublevel, bgColor, player);
 
 		if (!Over.quit) {
 			if (Over.life >0) {
+				oslPlaySound(won, 6);
 				if (sublevel)	level ++;
 				sublevel = !sublevel;
 			}
-			else	overScreen(f, false);
+			else	oslPlaySound(lost, 7), overScreen(f, false);
 		}
 	}
-
-	if (level >4)	overScreen(f, true);
-
-
+	
+	
 	oslStopSound(mgame);
+	if (level >4)	oslPlaySound(congrats, 6), overScreen(f, true);
+
+	
 	oslDeleteImage(player);
 
 	return 1;
 }
 
 
-Result gameLevel(OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, int hitDmg, int level, bool sublevel, OSL_COLOR bgColor, OSL_IMAGE *player) {
+Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, int hitDmg, int level, bool sublevel, OSL_COLOR bgColor, OSL_IMAGE *player) {
 
-	bool playing = true, tboltOn[4] = {false}, game_quit = false, lost_game = false, won_game = false;
+	bool playing = true, tboltOn[4] = {false}, game_quit = false, lost_game = false, won_game = false, critic_on = false;
 	int i, j, k, alpha = 255, alpha2 = alpha, delta[4] = {alpha}, redraw = 1, boltOn[4][4] = {{0}}, time = 0, oldTime = 0, timeLimit;
 	int nbBolt[4], maxBoltX, maxBoltY, n, hitDelay = HITUNIT;
 	OSL_IMAGE *hbolt = NULL, *vbolt = NULL, *tbolt1 = NULL, *tbolt2 = NULL;
@@ -120,7 +123,7 @@ Result gameLevel(OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, in
 
 	oslReadKeys();
 
-	while (playing) {
+	while (playing && !osl_quit) {
 
 		// sets random number of bolts for each side, depending on difficulty
 		n = 0;
@@ -178,7 +181,7 @@ Result gameLevel(OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, in
 			delta[i] = alpha;
 		}
 
-		while (((time - oldTime) <TIMEDELAY) && playing) {
+		while (((time - oldTime) <TIMEDELAY) && playing && !osl_quit) {
 
 			oslReadKeys();
 			// moving statements
@@ -207,7 +210,7 @@ Result gameLevel(OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, in
 			}
 
 			k = 0;
-			while (k <redraw) {
+			while (k <redraw && !osl_quit) {
 				if (!Over.quit) {
 					oslStartDrawing();
 					oslDrawGradientRect(0,0,WIDTH,HEIGHT,bgColor,RGB(2,3,40),RGB(255,255,255),bgColor);
@@ -221,6 +224,7 @@ Result gameLevel(OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, in
 								tbolt1->y = tboltPos[i].y;
 								if (((time - oldTime) >hitDelay)&&(delta[i] == 255)) {
 									if (isCollideCopy(player,tbolt1,player->x,player->y,0,0,tboltPos[i].x,tboltPos[i].y,0,0)) {
+										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 3);
 										Over.life-=hitDmg;
 										if (Over.life <0) Over.life = 0;
 									}
@@ -232,6 +236,7 @@ Result gameLevel(OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, in
 								tbolt2->y = tboltPos[i].y;
 								if (((time - oldTime) >hitDelay)&&(delta[i] == 255)) {
 									if (isCollideCopy(player,tbolt2,player->x,player->y,0,0,tboltPos[i].x,tboltPos[i].y,0,0)) {
+										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 3);
 										Over.life-=hitDmg;
 										if (Over.life <0) Over.life = 0;
 									}
@@ -243,6 +248,7 @@ Result gameLevel(OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, in
 								tbolt2->y = tboltPos[i].y;
 								if (((time - oldTime) >hitDelay)&&(delta[i] == 255)) {
 									if (isCollideCopy(player,tbolt2,player->x,player->y,0,0,tboltPos[i].x,tboltPos[i].y,0,0)) {
+										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 3);
 										Over.life-=hitDmg;
 										if (Over.life <0) Over.life = 0;
 									}
@@ -254,6 +260,7 @@ Result gameLevel(OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, in
 								tbolt1->y = tboltPos[i].y;
 								if (((time - oldTime) >hitDelay)&&(delta[i] == 255)) {
 									if (isCollideCopy(player,tbolt1,player->x,player->y,0,0,tboltPos[i].x,tboltPos[i].y,0,0)) {
+										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 3);
 										Over.life-=hitDmg;
 										if (Over.life <0) Over.life = 0;
 									}
@@ -269,6 +276,7 @@ Result gameLevel(OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, in
 								vbolt->y = boltPos[i][j].y;
 								if (((time - oldTime) >hitDelay)&&(alpha == 255)) {
 									if (isCollideCopy(player,vbolt,player->x,player->y,0,0,boltPos[i][j].x,boltPos[i][j].y,0,0)) {
+										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 3);
 										Over.life-=hitDmg;
 										if (Over.life <0) Over.life = 0;
 									}
@@ -280,6 +288,7 @@ Result gameLevel(OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, in
 								hbolt->y = boltPos[i][j].y;
 								if (((time - oldTime) >hitDelay)&&(alpha2 == 255)) {
 									if (isCollideCopy(player,hbolt,player->x,player->y,0,0,boltPos[i][j].x,boltPos[i][j].y,0,0)) {
+										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 3);
 										Over.life-=hitDmg;
 										if (Over.life <0) Over.life = 0;
 									}
@@ -300,12 +309,14 @@ Result gameLevel(OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, in
 					oslEndFrame();
 					oslSyncFrame();
 				}
-
+				
+				if (Over.life <30 && !critic_on)	oslPlaySound(critic, 0), critic_on = true;
 				if (redraw == 2) {
 					if (game_quit)	{
 						oslPauseSound(mgame, 1);
-						if (quitScreen(f))	playing = false, Over.quit = true;
-						else	game_quit = false, oslPauseSound(mgame, 0);
+						oslPlaySound(quit_open, 5);
+						if (quitScreen(f))	oslStopSound(quit_open), oslPlaySound(cancel, 5), playing = false, Over.quit = true;
+						else	oslStopSound(quit_open), oslPlaySound(quit_close, 5), game_quit = false, oslPauseSound(mgame, 0);
 					}
 					else if (lost_game)	playing = false, Over.quit = false;
 					else if (won_game)	playing = false;

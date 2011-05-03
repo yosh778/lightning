@@ -13,7 +13,7 @@ by Yosh alias Hitman_07
 #include "menu.h"
 
 
-int menu(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, OSL_IMAGE *bgstart, OSL_IMAGE *start, int *alpha_, int* difficulty)
+int menu(OSL_SOUND *cancel, OSL_SOUND *mstart, bool *returned, int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, OSL_IMAGE *bgstart, OSL_IMAGE *start, int *alpha_, int* difficulty)
 {
 	bool menu_on = true, launch = false, go_up = false;
 	int alpha, beta = 255, i, strHeight, menuPosX, curpos = 0;
@@ -33,8 +33,9 @@ int menu(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, OSL
 	oslSetKeyAnalogToDPad(PAD_SENS);
 
 
-	while(beta > 0)
+	while(beta > 0 && !osl_quit)
 	{
+		strtsnd_if(cancel, mstart, returned);
 		beta-=10;
 
 		if (beta < 0)	beta = 0;
@@ -57,10 +58,12 @@ int menu(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, OSL
 
 	alpha = 255;
 
-	while (menu_on) {
+	while (menu_on && !osl_quit) {
 
 		oslReadKeys();
 
+		
+		strtsnd_if(cancel, mstart, returned);
 
 		if (osl_pad.pressed.up)
 		{
@@ -101,7 +104,7 @@ int menu(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, OSL
 			launch = true;
 		}
 		else if (curpos == SETTINGS && osl_pad.held.cross) {
-			settings(bg_col_m, Bg_col, f, bgstartColor, difficulty);
+			settings(cancel, mstart, returned, bg_col_m, Bg_col, f, bgstartColor, difficulty);
 			curpos = 0;
 		}
 		else if (curpos == CREDITS && osl_pad.held.cross) {

@@ -8,6 +8,7 @@ by Yosh alias Hitman_07
 
 #include <oslib/oslib.h>
 #include "constants.h"
+#include "tinylib.h"
 
 
 int imFadeIn(OSL_IMAGE *image, int alpha, int decay) {
@@ -29,7 +30,7 @@ bool splashScreen(char *location, int timeLimit, int decay, OSL_COLOR bgColor) {
 	splashscreen->x=0;
 	splashscreen->y=0;
 
-	while (time <timeLimit-255/decay) {
+	while ((time <timeLimit-255/decay) && !osl_quit) {
 		time++;
 		oslStartDrawing();
 		oslDrawFillRect(0,0,480,272,bgColor);
@@ -41,7 +42,7 @@ bool splashScreen(char *location, int timeLimit, int decay, OSL_COLOR bgColor) {
 
 	decay*= -1;
 
-	while (alpha >0) {
+	while ((alpha >0) && !osl_quit) {
 		oslStartDrawing();
 		oslDrawFillRect(0,0,480,272,bgColor);
 		alpha = imFadeIn(splashscreen, alpha, decay);
@@ -77,7 +78,7 @@ bool startScreen(OSL_FONT *f, int level, bool sublevel) {
 	stagePos.y = (HEIGHT)/2 + levelHeight;
 
 	oslReadKeys();
-	while (!(osl_pad.pressed.start || osl_pad.pressed.cross)) {
+	while (!(osl_pad.pressed.start || osl_pad.pressed.cross) && !osl_quit) {
 
 		oslReadKeys();
 		oslStartDrawing();
@@ -104,7 +105,7 @@ bool startScreen(OSL_FONT *f, int level, bool sublevel) {
 
 	alpha = 66;
 
-	while (alpha <255) {
+	while ((alpha <255) && !osl_quit) {
 
 		oslStartDrawing();
 		oslIntraFontSetStyle(f, 1.f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
@@ -134,7 +135,7 @@ bool overScreen(OSL_FONT *f, bool over) {
 	oslSetFont(f);
 
 	oslReadKeys();
-	while (!(osl_pad.pressed.start || osl_pad.pressed.cross)) {
+	while (!(osl_pad.pressed.start || osl_pad.pressed.cross) && !osl_quit) {
 
 		oslReadKeys();
 		oslStartDrawing();
@@ -153,7 +154,7 @@ bool overScreen(OSL_FONT *f, bool over) {
 
 	alpha = 66;
 
-	while (alpha <255) {
+	while ((alpha <255) && !osl_quit) {
 
 		oslStartDrawing();
 		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
@@ -187,7 +188,7 @@ bool quitScreen(OSL_FONT *f) {
 
 
 	oslReadKeys();
-	while (!(end || osl_quit)) {
+	while (!(end || osl_quit) && !osl_quit) {
 		oslReadKeys();
 
 		if (osl_pad.pressed.cross)	quit = true, end= true;
@@ -216,7 +217,7 @@ bool quitScreen(OSL_FONT *f) {
 	return quit;
 }
 
-void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, int *difficulty) {
+void settings(OSL_SOUND *cancel, OSL_SOUND *mstart, bool *returned, int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, int *difficulty) {
 
 	bool menu_on = true, go_up = false;
 	int alpha, /*beta = 0, */i, strHeight, modeHeight, settPosX = WIDTH/2, set_mode = false, titleHeight, menuPosX, curpos = 1;
@@ -259,9 +260,12 @@ void settings(int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor
 
 	alpha = 255;
 
-	while (menu_on) {
+	while (menu_on && !osl_quit) {
 
 		oslReadKeys();
+		
+		
+		strtsnd_if(cancel, mstart, returned);
 
 		if (set_mode) {
 			if (osl_pad.pressed.up)
@@ -435,3 +439,9 @@ int save(Color *Bg_col, int *difficulty)
     return true;
 }
 */
+
+bool strtsnd_if(OSL_SOUND *to_wait, OSL_SOUND *to_play, bool *returned) {
+
+		if (*returned)	if(oslGetSoundChannel(to_wait) == -1)	oslPlaySound(to_play, 0), oslSetSoundLoop(to_play, 1), *returned = false;;
+		return returned;
+}

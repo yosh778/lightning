@@ -18,7 +18,7 @@ PSP_HEAP_SIZE_MAX();
 
 int main ()
 {
-	bool alphaBool = true;
+	bool alphaBool = true, returned = false;
 	int alpha = 0, bg_col_m = 1, difficulty = NORMAL;
 	OSL_COLOR bgstartColor = NULL;
 	Color Bg_col;
@@ -38,10 +38,19 @@ int main ()
 	splashScreen("./res/genesis.jpg", 60*3, 6, RGBA(0,0,0,255));
 
 	OSL_IMAGE *bgstart = NULL, *start = NULL;
-	OSL_SOUND *mstart = NULL, *mgame = NULL;
+	OSL_SOUND *mstart = NULL, *mgame = NULL, *congrats = NULL, *lost = NULL, *won = NULL, *appear = NULL, *quit_open = NULL, *quit_close = NULL, *cancel = NULL, *critic = NULL, *hurt = NULL;
 
-	mstart = oslLoadSoundFileBGM("./res/mstart.bgm",OSL_FMT_STREAM);
+	mstart = oslLoadSoundFileBGM("./res/mstart.bgm",OSL_FMT_STREAM/*OSL_FMT_NONE*/);
 	mgame = oslLoadSoundFileBGM("./res/mgame.bgm",OSL_FMT_STREAM);
+	congrats = oslLoadSoundFileBGM("./res/congrats.bgm",OSL_FMT_NONE);
+	lost = oslLoadSoundFileBGM("./res/lost.bgm",OSL_FMT_NONE);
+	won = oslLoadSoundFileBGM("./res/won.bgm",OSL_FMT_NONE);
+	appear = oslLoadSoundFileBGM("./res/appear.bgm",OSL_FMT_NONE);
+	quit_open = oslLoadSoundFileBGM("./res/quit_open.bgm",OSL_FMT_NONE);
+	quit_close = oslLoadSoundFileBGM("./res/quit_close.bgm",OSL_FMT_NONE);
+	cancel = oslLoadSoundFileBGM("./res/cancel.bgm",OSL_FMT_NONE);
+	critic = oslLoadSoundFileBGM("./res/critic.bgm",OSL_FMT_NONE);
+	hurt = oslLoadSoundFileBGM("./res/hurt.bgm",OSL_FMT_NONE);
 	oslPlaySound(mstart, 0);
 	oslSetSoundLoop(mstart, 1);
 
@@ -63,17 +72,20 @@ int main ()
 
 		if(osl_pad.pressed.cross || osl_pad.pressed.start)
 		{
-			if (menu(&bg_col_m, &Bg_col, f, &bgstartColor, bgstart,start,&alpha, &difficulty)) {
+			if (menu(mstart, cancel, &returned, &bg_col_m, &Bg_col, f, &bgstartColor, bgstart,start,&alpha, &difficulty)) {
 				oslStopSound(mstart);
-				play(&Bg_col, &bg_col_m, mgame, f, difficulty);
-				oslPlaySound(mstart, 0);
-				oslSetSoundLoop(mstart, 1);
+				play(congrats, lost, won, appear, quit_open, quit_close, cancel, critic, hurt, &Bg_col, &bg_col_m, mgame, f, difficulty);
+				returned = true;
+				//oslPlaySound(mstart, 0);
+				//oslSetSoundLoop(mstart, 1);
 			}
 			
 			alpha = 255;
 			alphaBool = false;
 		}
-
+		
+		if (returned)	if(oslGetSoundChannel(cancel) == -1)	oslPlaySound(mstart, 0), oslSetSoundLoop(mstart, 1), returned = false;;
+		
 
 		if (alpha < 24)	alpha = 24, alphaBool = true;
 		else if (alpha == 255)	alphaBool = false;
@@ -92,6 +104,15 @@ int main ()
 		oslSyncFrame();
 	}
 
+	oslDeleteSound(congrats);
+	oslDeleteSound(lost);
+	oslDeleteSound(won);
+	oslDeleteSound(appear);
+	oslDeleteSound(quit_open);
+	oslDeleteSound(quit_close);
+	oslDeleteSound(cancel);
+	oslDeleteSound(critic);
+	oslDeleteSound(hurt);
 	oslDeleteSound(mgame);
 	oslDeleteSound(mstart);
 	oslDeleteImage(bgstart);
