@@ -155,22 +155,12 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 		}
 
 		// activates random bolts's appearance for each side, depending on maximum number of bolts set above for each side
-		/*for (i=LEFT; i<DOWN+1; i++) {
+		for (i=LEFT; i<DOWN+1; i++) {
 			n = 0;
 			for (j=0; j<4; j++) {
 				boltOn[i][j] = 0;
 				if ((n <nbBolt[i]) && (i <UP) && (j<MAXBOLTY))	boltOn[i][j] = rand()%2;
 				else if ((n <nbBolt[i]) && (i >RIGHT))	boltOn[i][j] = rand()%2;
-				if (boltOn[i][j])	n++;
-			}
-		}*/
-		// activates random bolts's appearance for each side, depending on maximum number of bolts set above for each side
-		for (i=LEFT; i<DOWN+1; i++) {
-			n = 0;
-			for (j=0; j<4; j++) {
-				boltOn[i][j] = 1;
-				if (i <UP)	boltOn[i][j] = 0;
-				//else if ((n <nbBolt[i]) && (i >RIGHT))	boltOn[i][j] = rand()%2;
 				if (boltOn[i][j])	n++;
 			}
 		}

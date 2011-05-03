@@ -47,8 +47,8 @@ by Yosh alias Hitman_07
 //bolt disposition parameters
 # define BORDER_LAGX1 20
 # define BORDER_LAGX2 86
-# define BORDER_LAGY1 60
-# define BORDER_LAGY2 60
+# define BORDER_LAGY1 50
+# define BORDER_LAGY2 50
 # define N_LAGX1 ((WIDTH - 2*BORDER_LAGX1 - MAXBOLTX*vbolt->sizeX) / (MAXBOLTX - 1))
 # define N_LAGX2 ((WIDTH - 2*BORDER_LAGX2 - MAXBOLTX*vbolt->sizeX) / (MAXBOLTX - 1))
 # define N_LAGY1 ((HEIGHT - 2*BORDER_LAGY1 - MAXBOLTY*hbolt->sizeY) / (MAXBOLTY - 1))
