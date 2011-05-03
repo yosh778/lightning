@@ -16,7 +16,7 @@ by Yosh alias Hitman_07
 int play(OSL_SOUND *congrats, OSL_SOUND *lost, OSL_SOUND *won, OSL_SOUND *appear, OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel, OSL_SOUND *critic, OSL_SOUND *hurt, Color *Bg_col, int *bg_col_m, OSL_SOUND *mgame, OSL_FONT *f, int mode)
 {
 	int hitDmg, level = 1;
-	bool sublevel = false;
+	bool sublevel = false, launch = true;
 	OSL_COLOR bgColor = NULL;
 	bgColor = RGBA(R_BG,G_BG,B_BG,255);
 	OSL_IMAGE *player = NULL;
@@ -40,7 +40,7 @@ int play(OSL_SOUND *congrats, OSL_SOUND *lost, OSL_SOUND *won, OSL_SOUND *appear
 
 	while (level <5 && !Over.quit && !osl_quit) {
 		startScreen(f, level, sublevel);
-		if ((level == 1) && !sublevel)	oslPlaySound(appear, 2);
+		if (launch)	oslPlaySound(appear, 2), launch = false;
 		Over = gameLevel(quit_open, quit_close, cancel, critic, hurt, mgame, Bg_col, bg_col_m, f, hitDmg, level, sublevel, bgColor, player);
 
 		if (!Over.quit) {
@@ -155,12 +155,22 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 		}
 
 		// activates random bolts's appearance for each side, depending on maximum number of bolts set above for each side
-		for (i=LEFT; i<DOWN+1; i++) {
+		/*for (i=LEFT; i<DOWN+1; i++) {
 			n = 0;
 			for (j=0; j<4; j++) {
 				boltOn[i][j] = 0;
 				if ((n <nbBolt[i]) && (i <UP) && (j<MAXBOLTY))	boltOn[i][j] = rand()%2;
 				else if ((n <nbBolt[i]) && (i >RIGHT))	boltOn[i][j] = rand()%2;
+				if (boltOn[i][j])	n++;
+			}
+		}*/
+		// activates random bolts's appearance for each side, depending on maximum number of bolts set above for each side
+		for (i=LEFT; i<DOWN+1; i++) {
+			n = 0;
+			for (j=0; j<4; j++) {
+				boltOn[i][j] = 1;
+				if (i <UP)	boltOn[i][j] = 0;
+				//else if ((n <nbBolt[i]) && (i >RIGHT))	boltOn[i][j] = rand()%2;
 				if (boltOn[i][j])	n++;
 			}
 		}
