@@ -13,7 +13,7 @@ by Yosh alias Hitman_07
 #include "menu.h"
 
 
-int menu(OSL_SOUND *cancel, OSL_SOUND *mstart, bool *returned, int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, OSL_IMAGE *bgstart, OSL_IMAGE *start, int *alpha_, int* difficulty)
+int menu(OSL_SOUND *fx_up, OSL_SOUND *fx_dn, OSL_SOUND *cancel, OSL_SOUND *mstart, bool *returned, int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, OSL_IMAGE *bgstart, OSL_IMAGE *start, int *alpha_, int* difficulty)
 {
 	bool menu_on = true, launch = false, go_up = false;
 	int alpha, beta = 255, i, strHeight, menuPosX, curpos = 0;
@@ -67,12 +67,16 @@ int menu(OSL_SOUND *cancel, OSL_SOUND *mstart, bool *returned, int *bg_col_m, Co
 
 		if (osl_pad.pressed.up)
 		{
+			if(oslGetSoundChannel(fx_up) != -1)	oslStopSound(fx_up);
+			oslPlaySound(fx_up, 5);
 			curpos--;
 			if (curpos < 0)	curpos = 3;
 		}
 
 		if (osl_pad.pressed.down)
 		{
+			if(oslGetSoundChannel(fx_dn) != -1)	oslStopSound(fx_dn);
+			oslPlaySound(fx_dn, 5);
 			curpos++;
 			if (curpos > 3)	curpos = 0;
 		}

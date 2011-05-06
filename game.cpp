@@ -341,7 +341,7 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 					oslSyncFrame();
 				}
 
-				if (Over.life <30 && !critic_on)	oslPlaySound(critic, 0), critic_on = true;
+				if (Over.life <30 && !critic_on)	oslPlaySound(critic, 0), critic_on = true, oslAudioVSync();
 				if (redraw == 2) {
 					if (game_quit)	{
 						oslPauseSound(mgame, 1);
