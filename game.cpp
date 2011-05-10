@@ -363,14 +363,14 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 				k++;
 			}
 			redraw = 1;
-		}
     if (delta[0] <255) delta[0]+= 10; else delta[0] = 255;
     if (delta[1] <255) delta[1]+= 10; else delta[1] = 255;
     if (delta[2] <255) delta[2]+= 10; else delta[2] = 255;
     if (delta[3] <255) delta[3]+= 10; else delta[3] = 255;
     if (alpha <255) alpha+= 10; else alpha = 255;
     if (alpha2 <255) alpha2+= 10; else alpha2 = 255;
-    
+		}
+
 		oldTime = time;
 	}
 
