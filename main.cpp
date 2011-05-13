@@ -38,21 +38,16 @@ int main ()
 	splashScreen("./res/genesis.jpg", 60*3, 6, RGBA(0,0,0,255));
 
 	OSL_IMAGE *bgstart = NULL, *start = NULL;
-	OSL_SOUND *mstart = NULL, *mgame = NULL, *congrats = NULL, *lost = NULL, *won = NULL, *appear = NULL, *quit_open = NULL, *quit_close = NULL, *cancel = NULL, *critic = NULL, *hurt = NULL, *fx_up = NULL, *fx_dn = NULL;
+	OSL_SOUND *mstart = NULL, *mgame = NULL, *congrats = NULL, *won = NULL, *appear = NULL, *critic = NULL, *hurt = NULL, *fx = NULL;
 
 	mstart = oslLoadSoundFileBGM("./res/mstart.bgm",OSL_FMT_STREAM/*OSL_FMT_NONE*/);
 	mgame = oslLoadSoundFileBGM("./res/mgame.bgm",OSL_FMT_STREAM);
 	congrats = oslLoadSoundFileBGM("./res/congrats.bgm",OSL_FMT_NONE);
-	lost = oslLoadSoundFileBGM("./res/lost.bgm",OSL_FMT_NONE);
 	won = oslLoadSoundFileBGM("./res/won.bgm",OSL_FMT_NONE);
 	appear = oslLoadSoundFileBGM("./res/appear.bgm",OSL_FMT_NONE);
-	quit_open = oslLoadSoundFileBGM("./res/quit_open.bgm",OSL_FMT_NONE);
-	quit_close = oslLoadSoundFileBGM("./res/quit_close.bgm",OSL_FMT_NONE);
-	cancel = oslLoadSoundFileBGM("./res/cancel.bgm",OSL_FMT_NONE);
 	critic = oslLoadSoundFileBGM("./res/critic.bgm",OSL_FMT_NONE);
 	hurt = oslLoadSoundFileBGM("./res/hurt.bgm",OSL_FMT_NONE);
-	fx_up = oslLoadSoundFileBGM("./res/fx_up.bgm",OSL_FMT_NONE);
-	fx_dn = oslLoadSoundFileBGM("./res/fx_dn.bgm",OSL_FMT_NONE);
+	fx = oslLoadSoundFileBGM("./res/fx.bgm",OSL_FMT_NONE);
 	oslPlaySound(mstart, 0);
 	oslSetSoundLoop(mstart, 1);
 
@@ -74,9 +69,9 @@ int main ()
 
 		if(osl_pad.pressed.cross || osl_pad.pressed.start)
 		{
-			if (menu(fx_up, fx_dn, mstart, cancel, &returned, &bg_col_m, &Bg_col, f, &bgstartColor, bgstart,start,&alpha, &difficulty)) {
+			if (menu(fx, mstart, &returned, &bg_col_m, &Bg_col, f, &bgstartColor, bgstart,start,&alpha, &difficulty)) {
 				oslStopSound(mstart);
-				play(congrats, lost, won, appear, quit_open, quit_close, cancel, critic, hurt, &Bg_col, &bg_col_m, mgame, f, difficulty);
+				play(congrats, won, appear, fx, critic, hurt, &Bg_col, &bg_col_m, mgame, f, difficulty);
 				returned = true;
 				//oslPlaySound(mstart, 0);
 				//oslSetSoundLoop(mstart, 1);
@@ -86,7 +81,7 @@ int main ()
 			alphaBool = false;
 		}
 		
-		if (returned)	if(oslGetSoundChannel(cancel) == -1)	oslPlaySound(mstart, 0), oslSetSoundLoop(mstart, 1), returned = false;;
+		if (returned)	if(oslGetSoundChannel(fx) == -1)	oslPlaySound(mstart, 0), oslSetSoundLoop(mstart, 1), returned = false;;
 		
 
 		if (alpha < 24)	alpha = 24, alphaBool = true;
@@ -106,15 +101,10 @@ int main ()
 		oslSyncFrame();
 	}
 
-	oslDeleteSound(fx_up);
-	oslDeleteSound(fx_dn);
+	oslDeleteSound(fx);
 	oslDeleteSound(congrats);
-	oslDeleteSound(lost);
 	oslDeleteSound(won);
 	oslDeleteSound(appear);
-	oslDeleteSound(quit_open);
-	oslDeleteSound(quit_close);
-	oslDeleteSound(cancel);
 	oslDeleteSound(critic);
 	oslDeleteSound(hurt);
 	oslDeleteSound(mgame);

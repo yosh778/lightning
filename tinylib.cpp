@@ -129,10 +129,11 @@ bool startScreen(OSL_FONT *f, int level, bool sublevel) {
 
 bool overScreen(OSL_FONT *f, bool over) {
 
-	int alpha = 0;
+	int alpha = 0, Height;
 
 	oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
 	oslSetFont(f);
+	Height = osl_curFont->charHeight;
 
 	oslReadKeys();
 	while (!(osl_pad.pressed.start || osl_pad.pressed.cross) && !osl_quit) {
@@ -142,8 +143,8 @@ bool overScreen(OSL_FONT *f, bool over) {
 		oslSetAlpha(OSL_FX_ALPHA, alpha);
 		oslDrawFillRect(0,0,480,272,RGBA(0,0,0,255));
 		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
-		if (over)	oslDrawString(WIDTH/2, HEIGHT/2, "Congratulations, you just made it through the last level !");
-		else	oslDrawString(WIDTH/2, HEIGHT/2, "You're not good enough to go to the next level.");
+		if (over)	oslDrawString(WIDTH/2, (HEIGHT - Height/2)/2, "You win, congratulations !"/*"Congratulations, you just made it through the last level !"*/);
+		else	oslDrawString(WIDTH/2, (HEIGHT - Height/2)/2, "You're not good enough to go to the next level.");
 		oslSetAlpha(OSL_FX_DEFAULT, 0);
 		oslEndDrawing();
 		oslEndFrame();
@@ -158,8 +159,8 @@ bool overScreen(OSL_FONT *f, bool over) {
 
 		oslStartDrawing();
 		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
-		if (over)	oslDrawString(WIDTH/2, HEIGHT/2, "Congratulations, you just made it through the last level !");
-		else	oslDrawString(WIDTH/2, HEIGHT/2, "You're not good enough to go to the next level.");
+		if (over)	oslDrawString(WIDTH/2, (HEIGHT - Height/2)/2, "You win, congratulations !"/*"Congratulations, you just made it through the last level !"*/);
+		else	oslDrawString(WIDTH/2, (HEIGHT - Height/2)/2, "You're not good enough to go to the next level.");
 		oslSetAlpha(OSL_FX_ALPHA, alpha);
 		oslDrawFillRect(0,0,480,272,RGBA(0,0,0,255));
 		oslSetAlpha(OSL_FX_DEFAULT, 0);
@@ -217,7 +218,7 @@ bool quitScreen(OSL_FONT *f) {
 	return quit;
 }
 
-void settings(OSL_SOUND *cancel, OSL_SOUND *mstart, bool *returned, int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, int *difficulty) {
+void settings(OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, int *difficulty) {
 
 	bool menu_on = true, go_up = false;
 	int alpha, /*beta = 0, */i, strHeight, modeHeight, settPosX = WIDTH/2, set_mode = false, titleHeight, menuPosX, curpos = 1;
@@ -265,17 +266,21 @@ void settings(OSL_SOUND *cancel, OSL_SOUND *mstart, bool *returned, int *bg_col_
 		oslReadKeys();
 		
 		
-		strtsnd_if(cancel, mstart, returned);
+		strtsnd_if(fx, mstart, returned);
 
 		if (set_mode) {
 			if (osl_pad.pressed.up)
 			{
+				if(oslGetSoundChannel(fx) != -1)	oslStopSound(fx);
+				oslPlaySound(fx, 2);
 				(*difficulty)--;
 				if ((*difficulty) < 0)	(*difficulty) = 3;
 			}
 
 			if (osl_pad.pressed.down)
 			{
+				if(oslGetSoundChannel(fx) != -1)	oslStopSound(fx);
+				oslPlaySound(fx, 2);
 				(*difficulty)++;
 				if ((*difficulty) > 3)	(*difficulty) = 0;
 			}
@@ -284,12 +289,16 @@ void settings(OSL_SOUND *cancel, OSL_SOUND *mstart, bool *returned, int *bg_col_
 		else {
 			if (osl_pad.pressed.up)
 			{
+				if(oslGetSoundChannel(fx) != -1)	oslStopSound(fx);
+				oslPlaySound(fx, 2);
 				curpos--;
 				if (curpos < 1)	curpos = 3;
 			}
 
 			if (osl_pad.pressed.down)
 			{
+				if(oslGetSoundChannel(fx) != -1)	oslStopSound(fx);
+				oslPlaySound(fx, 2);
 				curpos++;
 				if (curpos >3)	curpos = 1;
 			}
@@ -341,6 +350,10 @@ void settings(OSL_SOUND *cancel, OSL_SOUND *mstart, bool *returned, int *bg_col_
 		oslEndFrame();
 		oslSyncFrame();
 
+		
+		if (!set_mode && osl_pad.pressed.circle) {
+			menu_on = false;
+		}
 		if (!set_mode && curpos == SET_MODE+1 && osl_pad.pressed.cross) {
 			set_mode = true;
 		}
@@ -352,12 +365,20 @@ void settings(OSL_SOUND *cancel, OSL_SOUND *mstart, bool *returned, int *bg_col_
 			{
 				(*bg_col_m)--;
 				if (*bg_col_m <1)	(*bg_col_m) = 1;
+				else {
+					if(oslGetSoundChannel(fx) != -1)	oslStopSound(fx);
+					oslPlaySound(fx, 2);
+				}
 				*bgstartColor = RGBA(6*(Bg_col->r)*(*bg_col_m),6*(Bg_col->g)*(*bg_col_m),6*(Bg_col->b)*(*bg_col_m),255);
 			}
 			else if (osl_pad.pressed.right)
 			{
 				(*bg_col_m)++;
 				if (*bg_col_m >100)	(*bg_col_m) = 100;
+				else {
+					if(oslGetSoundChannel(fx) != -1)	oslStopSound(fx);
+					oslPlaySound(fx, 2);
+				}
 			}
 			*bgstartColor = RGBA(6*(Bg_col->r)*(*bg_col_m),6*(Bg_col->g)*(*bg_col_m),6*(Bg_col->b)*(*bg_col_m),255);
 		}
@@ -366,9 +387,6 @@ void settings(OSL_SOUND *cancel, OSL_SOUND *mstart, bool *returned, int *bg_col_
 		}
 		else if (curpos == SET_SAVE+1 && osl_pad.pressed.cross) {
 		}*/
-		if (!set_mode && osl_pad.pressed.circle) {
-			menu_on = false;
-		}
 
 		if (go_up)	alpha+= 5;
 		else	alpha-= 5;

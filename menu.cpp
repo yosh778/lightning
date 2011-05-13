@@ -13,7 +13,7 @@ by Yosh alias Hitman_07
 #include "menu.h"
 
 
-int menu(OSL_SOUND *fx_up, OSL_SOUND *fx_dn, OSL_SOUND *cancel, OSL_SOUND *mstart, bool *returned, int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, OSL_IMAGE *bgstart, OSL_IMAGE *start, int *alpha_, int* difficulty)
+int menu(OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, OSL_IMAGE *bgstart, OSL_IMAGE *start, int *alpha_, int* difficulty)
 {
 	bool menu_on = true, launch = false, go_up = false;
 	int alpha, beta = 255, i, strHeight, menuPosX, curpos = 0;
@@ -35,7 +35,7 @@ int menu(OSL_SOUND *fx_up, OSL_SOUND *fx_dn, OSL_SOUND *cancel, OSL_SOUND *mstar
 
 	while(beta > 0 && !osl_quit)
 	{
-		strtsnd_if(cancel, mstart, returned);
+		strtsnd_if(fx, mstart, returned);
 		beta-=10;
 
 		if (beta < 0)	beta = 0;
@@ -63,20 +63,20 @@ int menu(OSL_SOUND *fx_up, OSL_SOUND *fx_dn, OSL_SOUND *cancel, OSL_SOUND *mstar
 		oslReadKeys();
 
 		
-		strtsnd_if(cancel, mstart, returned);
+		strtsnd_if(fx, mstart, returned);
 
 		if (osl_pad.pressed.up)
 		{
-			if(oslGetSoundChannel(fx_up) != -1)	oslStopSound(fx_up);
-			oslPlaySound(fx_up, 5);
+			if(oslGetSoundChannel(fx) != -1)	oslStopSound(fx);
+			oslPlaySound(fx, 2);
 			curpos--;
 			if (curpos < 0)	curpos = 3;
 		}
 
 		if (osl_pad.pressed.down)
 		{
-			if(oslGetSoundChannel(fx_dn) != -1)	oslStopSound(fx_dn);
-			oslPlaySound(fx_dn, 5);
+			if(oslGetSoundChannel(fx) != -1)	oslStopSound(fx);
+			oslPlaySound(fx, 2);
 			curpos++;
 			if (curpos > 3)	curpos = 0;
 		}
@@ -108,7 +108,7 @@ int menu(OSL_SOUND *fx_up, OSL_SOUND *fx_dn, OSL_SOUND *cancel, OSL_SOUND *mstar
 			launch = true;
 		}
 		else if (curpos == SETTINGS && osl_pad.held.cross) {
-			settings(cancel, mstart, returned, bg_col_m, Bg_col, f, bgstartColor, difficulty);
+			settings(fx, mstart, returned, bg_col_m, Bg_col, f, bgstartColor, difficulty);
 			curpos = 0;
 		}
 		else if (curpos == CREDITS && osl_pad.held.cross) {

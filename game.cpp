@@ -13,7 +13,7 @@ by Yosh alias Hitman_07
 #include "tinylib.h"
 
 
-int play(OSL_SOUND *congrats, OSL_SOUND *lost, OSL_SOUND *won, OSL_SOUND *appear, OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel, OSL_SOUND *critic, OSL_SOUND *hurt, Color *Bg_col, int *bg_col_m, OSL_SOUND *mgame, OSL_FONT *f, int mode)
+int play(OSL_SOUND *congrats, OSL_SOUND *won, OSL_SOUND *appear, OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, Color *Bg_col, int *bg_col_m, OSL_SOUND *mgame, OSL_FONT *f, int mode)
 {
 	int hitDmg, level = 1;
 	bool sublevel = false, launch = true;
@@ -40,8 +40,8 @@ int play(OSL_SOUND *congrats, OSL_SOUND *lost, OSL_SOUND *won, OSL_SOUND *appear
 
 	while (level <5 && !Over.quit && !osl_quit) {
 		startScreen(f, level, sublevel);
-		if (launch)	oslPlaySound(appear, 2), launch = false;
-		Over = gameLevel(quit_open, quit_close, cancel, critic, hurt, mgame, Bg_col, bg_col_m, f, hitDmg, level, sublevel, bgColor, player);
+		if (launch)	oslPlaySound(appear, 3), launch = false;
+		Over = gameLevel(fx, critic, hurt, mgame, Bg_col, bg_col_m, f, hitDmg, level, sublevel, bgColor, player);
 
 		if (!Over.quit) {
 			if (Over.life >0) {
@@ -49,13 +49,13 @@ int play(OSL_SOUND *congrats, OSL_SOUND *lost, OSL_SOUND *won, OSL_SOUND *appear
 				if (sublevel)	level ++;
 				sublevel = !sublevel;
 			}
-			else	oslPlaySound(lost, 7), overScreen(f, false);
+			else	overScreen(f, false);
 		}
 	}
 
 
 	oslStopSound(mgame);
-	if (level >4)	oslPlaySound(congrats, 6), overScreen(f, true);
+	if (level >4)	oslPlaySound(congrats, 7), overScreen(f, true);
 
 
 	oslDeleteImage(player);
@@ -64,7 +64,7 @@ int play(OSL_SOUND *congrats, OSL_SOUND *lost, OSL_SOUND *won, OSL_SOUND *appear
 }
 
 
-Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, int hitDmg, int level, bool sublevel, OSL_COLOR bgColor, OSL_IMAGE *player) {
+Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, int hitDmg, int level, bool sublevel, OSL_COLOR bgColor, OSL_IMAGE *player) {
 
 	bool playing = true, tboltOn[4] = {false}, game_quit = false, lost_game = false, won_game = false, critic_on = false;
 	int i, j, k, m, alpha = 255, alpha2 = alpha, delta[4] = {alpha}, redraw = 1, boltOn[4][4] = {{0}}, time = 0, oldTime = 0, timeLimit;
@@ -109,15 +109,15 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 	}
 	else if (level == 2)	{
 		if (sublevel == false)	maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
-		else	maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
+		else	hitDelay = 35, maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
 	}
 	else if (level == 3)	{
-		if (sublevel == false)	maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
-		else	maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
+		if (sublevel == false)	hitDelay = 35, maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
+		else	hitDelay = 40, maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
 	}
 	else	{
-		if (sublevel == false)	maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
-		else	maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
+		if (sublevel == false)	hitDelay = 40, maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
+		else	hitDelay = 45, maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
 	}
 
 
@@ -175,7 +175,8 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 			else {
 				j = rand()%4;
 				if (j == 2)	j = 0;
-				else if (j == 1)	j = 3; }
+				else if (j == 1)	j = 3;
+			}
 
 			if (i == LEFT)	{
 				if (j == 0)	boltOn[i][j] = 0, boltOn[UP][0] = 0;
@@ -192,6 +193,17 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 			else if (i == DOWN && (j == 0 || j == 3))	{
 				if (j == 0)	boltOn[i][j] = 0, boltOn[LEFT][1] = 0;
 				else	boltOn[i][j] = 0, boltOn[RIGHT][1] = 0;
+			}
+		}
+			// erases some bolts if all up and down were activated
+		else if (boltOn[UP][0] && boltOn[UP][1] && boltOn[UP][2] && boltOn[UP][3] && boltOn[DOWN][0] && boltOn[DOWN][1] && boltOn[DOWN][2] && boltOn[DOWN][3]) {
+			j = rand()%8;
+			if (j <4) {
+				boltOn[UP][j] = 0;
+			}
+			else {
+				j = rand()%3;
+				boltOn[DOWN][j] = 0, boltOn[DOWN][j+1] = 0;
 			}
 		}
 
@@ -255,7 +267,7 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 								tbolt1->y = tboltPos[i].y;
 								if (((time - oldTime) >hitDelay)&&(delta[i] == 255)) {
 									if (isCollideCopy(player,tbolt1,player->x,player->y,0,0,tboltPos[i].x,tboltPos[i].y,0,0)) {
-										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 3);
+										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 4);
 										Over.life-=hitDmg;
 										if (Over.life <0) Over.life = 0;
 									}
@@ -267,7 +279,7 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 								tbolt2->y = tboltPos[i].y;
 								if (((time - oldTime) >hitDelay)&&(delta[i] == 255)) {
 									if (isCollideCopy(player,tbolt2,player->x,player->y,0,0,tboltPos[i].x,tboltPos[i].y,0,0)) {
-										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 3);
+										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 4);
 										Over.life-=hitDmg;
 										if (Over.life <0) Over.life = 0;
 									}
@@ -279,7 +291,7 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 								tbolt2->y = tboltPos[i].y;
 								if (((time - oldTime) >hitDelay)&&(delta[i] == 255)) {
 									if (isCollideCopy(player,tbolt2,player->x,player->y,0,0,tboltPos[i].x,tboltPos[i].y,0,0)) {
-										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 3);
+										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 4);
 										Over.life-=hitDmg;
 										if (Over.life <0) Over.life = 0;
 									}
@@ -291,7 +303,7 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 								tbolt1->y = tboltPos[i].y;
 								if (((time - oldTime) >hitDelay)&&(delta[i] == 255)) {
 									if (isCollideCopy(player,tbolt1,player->x,player->y,0,0,tboltPos[i].x,tboltPos[i].y,0,0)) {
-										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 3);
+										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 4);
 										Over.life-=hitDmg;
 										if (Over.life <0) Over.life = 0;
 									}
@@ -307,7 +319,7 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 								vbolt->y = boltPos[i][j].y;
 								if (((time - oldTime) >hitDelay)&&(alpha == 255)) {
 									if (isCollideCopy(player,vbolt,player->x,player->y,0,0,boltPos[i][j].x,boltPos[i][j].y,0,0)) {
-										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 3);
+										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 4);
 										Over.life-=hitDmg;
 										if (Over.life <0) Over.life = 0;
 									}
@@ -319,7 +331,7 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 								hbolt->y = boltPos[i][j].y;
 								if (((time - oldTime) >hitDelay)&&(alpha2 == 255)) {
 									if (isCollideCopy(player,hbolt,player->x,player->y,0,0,boltPos[i][j].x,boltPos[i][j].y,0,0)) {
-										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 3);
+										if(oslGetSoundChannel(hurt) == -1)	oslPlaySound(hurt, 4);
 										Over.life-=hitDmg;
 										if (Over.life <0) Over.life = 0;
 									}
@@ -341,13 +353,12 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 					oslSyncFrame();
 				}
 
-				if (Over.life <30 && !critic_on)	oslPlaySound(critic, 0), critic_on = true, oslAudioVSync();
+				if (Over.life <30 && !critic_on)	oslPlaySound(critic, 5), critic_on = true;
 				if (redraw == 2) {
 					if (game_quit)	{
 						oslPauseSound(mgame, 1);
-						oslPlaySound(quit_open, 5);
-						if (quitScreen(f))	oslStopSound(quit_open), oslPlaySound(cancel, 5), playing = false, Over.quit = true;
-						else	oslStopSound(quit_open), oslPlaySound(quit_close, 5), game_quit = false, oslPauseSound(mgame, 0);
+						if (quitScreen(f))	playing = false, Over.quit = true;
+						else	game_quit = false, oslPauseSound(mgame, 0);
 					}
 					else if (lost_game)	playing = false, Over.quit = false;
 					else if (won_game)	playing = false;
@@ -355,7 +366,7 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 
 				else if (osl_pad.pressed.start || osl_pad.pressed.circle)	redraw = 2, game_quit = true;
 
-				else if (time >timeLimit /*|| osl_pad.held.L*/)	redraw = 2, won_game = true;
+				else if (time >timeLimit/* || osl_pad.held.L*/)	redraw = 2, won_game = true;
 
 				else if (Over.life == 0)	redraw = 2, lost_game = true;
 
@@ -363,12 +374,18 @@ Result gameLevel(OSL_SOUND *quit_open, OSL_SOUND *quit_close, OSL_SOUND *cancel,
 				k++;
 			}
 			redraw = 1;
-    if (delta[0] <255) delta[0]+= 10; else delta[0] = 255;
-    if (delta[1] <255) delta[1]+= 10; else delta[1] = 255;
-    if (delta[2] <255) delta[2]+= 10; else delta[2] = 255;
-    if (delta[3] <255) delta[3]+= 10; else delta[3] = 255;
-    if (alpha <255) alpha+= 10; else alpha = 255;
-    if (alpha2 <255) alpha2+= 10; else alpha2 = 255;
+			if (delta[0] <245) delta[0]+= 10;
+			else delta[0] = 255;
+			if (delta[1] <245) delta[1]+= 10;
+			else delta[1] = 255;
+			if (delta[2] <245) delta[2]+= 10;
+			else delta[2] = 255;
+			if (delta[3] <245) delta[3]+= 10;
+			else delta[3] = 255;
+			if (alpha <245) alpha+= 10;
+			else alpha = 255;
+			if (alpha2 <245) alpha2+= 10;
+			else alpha2 = 255;
 		}
 
 		oldTime = time;
