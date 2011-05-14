@@ -44,7 +44,7 @@ int play(OSL_SOUND *congrats, OSL_SOUND *won, OSL_SOUND *appear, OSL_SOUND *fx, 
 		Over = gameLevel(fx, critic, hurt, mgame, Bg_col, bg_col_m, f, hitDmg, level, sublevel, bgColor, player);
 
 		if (!Over.quit) {
-			if (Over.life >0) {
+			if (Over.life >0 && !(level == 4 && sublevel)) {
 				oslPlaySound(won, 6);
 				if (sublevel)	level ++;
 				sublevel = !sublevel;
@@ -55,7 +55,7 @@ int play(OSL_SOUND *congrats, OSL_SOUND *won, OSL_SOUND *appear, OSL_SOUND *fx, 
 
 
 	oslStopSound(mgame);
-	if (level >4)	overScreen(congrats, f, true);
+	if (level == 4)	overScreen(congrats, f, true);
 
 
 	oslDeleteImage(player);
