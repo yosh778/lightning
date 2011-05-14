@@ -395,7 +395,7 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 					oslSetAlpha(OSL_FX_DEFAULT, 0);
 					
 					sprintf(score, "Score : %d", Score+(time/60)*10);
-					sprintf(health, "Health : %3d%%", Over.life);
+					sprintf(health, "Health : %3d %%", Over.life);
 					oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,255), RGBA(0,0,0,224),INTRAFONT_ALIGN_LEFT);
 					oslDrawString(20, 12, score);
 					oslDrawString(20, 12+height[0]+0, health);
@@ -404,7 +404,7 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 					oslDrawGradientRect(0,HEIGHT - (HEIGHT/16 + HEIGHT/32),WIDTH,HEIGHT,bgColor,bgColor,bgColor,bgColor);
 					oslSetAlpha(OSL_FX_ALPHA, 48);
 					oslDrawFillRect(0 + 2,HEIGHT - (HEIGHT/16 + HEIGHT/32)+ 2,((WIDTH - 2)*((100 - ((timeLimit - time)*100)/timeLimit)/PREVIEW))/(100/PREVIEW),HEIGHT - 2,RGB(8,8,8));
-					sprintf(score, "%3d", ((100 - ((timeLimit - time)*100)/timeLimit)/PREVIEW)*PREVIEW);
+					sprintf(score, "%3d %%", ((100 - ((timeLimit - time)*100)/timeLimit)/PREVIEW)*PREVIEW);
 					oslIntraFontSetStyle(f, 0.7f,RGBA(192,192,192,224), RGBA(0,0,0,224),INTRAFONT_ALIGN_CENTER);
 					oslDrawString(WIDTH/2, (HEIGHT - (HEIGHT/16 + HEIGHT/32) + HEIGHT - height[1]/2)/2 - 1, score);
 					oslSetAlpha(OSL_FX_DEFAULT, 0);
