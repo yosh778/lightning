@@ -127,7 +127,7 @@ bool startScreen(OSL_FONT *f, int level, bool sublevel) {
 	return true;
 }
 
-bool overScreen(OSL_FONT *f, bool over) {
+bool overScreen(OSL_SOUND *congrats, OSL_FONT *f, bool over) {
 
 	int alpha = 0, Height;
 
@@ -143,7 +143,7 @@ bool overScreen(OSL_FONT *f, bool over) {
 		oslSetAlpha(OSL_FX_ALPHA, alpha);
 		oslDrawFillRect(0,0,480,272,RGBA(0,0,0,255));
 		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
-		if (over)	oslDrawString(WIDTH/2, (HEIGHT - Height/2)/2, "You win, congratulations !"/*"Congratulations, you just made it through the last level !"*/);
+		if (over)	oslDrawString(WIDTH/2, (HEIGHT - Height/2)/2, "You won, congratulations !"/*"Congratulations, you just made it through the last level !"*/);
 		else	oslDrawString(WIDTH/2, (HEIGHT - Height/2)/2, "You're not good enough to go to the next level.");
 		oslSetAlpha(OSL_FX_DEFAULT, 0);
 		oslEndDrawing();
@@ -154,12 +154,15 @@ bool overScreen(OSL_FONT *f, bool over) {
 	}
 
 	alpha = 66;
-
+	
+	if (over)	oslPlaySound(congrats, 7);
+	
+	
 	while ((alpha <255) && !osl_quit) {
 
 		oslStartDrawing();
 		oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
-		if (over)	oslDrawString(WIDTH/2, (HEIGHT - Height/2)/2, "You win, congratulations !"/*"Congratulations, you just made it through the last level !"*/);
+		if (over)	oslDrawString(WIDTH/2, (HEIGHT - Height/2)/2, "You won, congratulations !"/*"Congratulations, you just made it through the last level !"*/);
 		else	oslDrawString(WIDTH/2, (HEIGHT - Height/2)/2, "You're not good enough to go to the next level.");
 		oslSetAlpha(OSL_FX_ALPHA, alpha);
 		oslDrawFillRect(0,0,480,272,RGBA(0,0,0,255));
