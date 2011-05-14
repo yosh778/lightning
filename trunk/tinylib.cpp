@@ -129,6 +129,7 @@ bool startScreen(OSL_FONT *f, int level, bool sublevel) {
 
 bool overScreen(OSL_SOUND *congrats, OSL_FONT *f, bool over) {
 
+	bool played = false;
 	int alpha = 0, Height;
 
 	oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,alpha), RGBA(0,0,0,alpha),INTRAFONT_ALIGN_CENTER);
@@ -150,13 +151,13 @@ bool overScreen(OSL_SOUND *congrats, OSL_FONT *f, bool over) {
 		oslEndFrame();
 		oslSyncFrame();
 		alpha+= 10;
-		if (alpha >255)	alpha = 255;
+		if (alpha >254) {
+			if (over && !played)	oslPlaySound(congrats, 7), played = true;
+			alpha = 255;
+		}
 	}
 
 	alpha = 66;
-	
-	if (over)	oslPlaySound(congrats, 7);
-	
 	
 	while ((alpha <255) && !osl_quit) {
 
