@@ -35,6 +35,7 @@ by Yosh alias Hitman_07
 
 //game engine
 # define MOVE_STEP 12
+# define PREVIEW 5
 # define HITUNIT 30
 # define TIMEUNIT 10*60
 # define TIMEDELAY hitDelay*3

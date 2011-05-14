@@ -67,8 +67,9 @@ int play(OSL_SOUND *congrats, OSL_SOUND *won, OSL_SOUND *appear, OSL_SOUND *fx, 
 Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *mgame, Color *Bg_col, int *bg_col_m, OSL_FONT *f, int hitDmg, int level, bool sublevel, OSL_COLOR bgColor, OSL_IMAGE *player) {
 
 	bool playing = true, tboltOn[4] = {false}, game_quit = false, lost_game = false, won_game = false, critic_on = false;
-	int i, j, k, m, alpha = 255, alpha2 = alpha, delta[4] = {alpha}, redraw = 1, boltOn[4][4] = {{0}}, time = 0, oldTime = 0, timeLimit;
-	int nbBolt[4], maxBoltX, maxBoltY, n, hitDelay = HITUNIT;
+	int i, j, k, m, height[2], alpha = 255, alpha2 = alpha, delta[4] = {alpha}, redraw = 1, boltOn[4][4] = {{0}}, time = 0, oldTime = 0, timeLimit, timeLevel;
+	int nbBolt[4], maxBoltX, maxBoltY, n, hitDelay = HITUNIT, Score = 0;
+	char score[20] = {NULL}, health[20] = {NULL};
 	OSL_IMAGE *hbolt = NULL, *vbolt = NULL, *tbolt1 = NULL, *tbolt2 = NULL;
 	hbolt=oslLoadImageFilePNG("./res/hbolt.png",OSL_IN_RAM,OSL_PF_8888);
 	vbolt=oslLoadImageFilePNG("./res/vbolt.png",OSL_IN_RAM,OSL_PF_8888);
@@ -79,7 +80,26 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 	Over.life = 100;
 	Over.quit = false;
 
-
+	oslIntraFontSetStyle(f, 0.6f,RGBA(255,255,255,255), RGBA(0,0,0,224),INTRAFONT_ALIGN_LEFT);
+	oslSetFont(f);
+	height[0] = osl_curFont->charHeight;
+	oslIntraFontSetStyle(f, 0.7f,RGBA(255,255,255,255), RGBA(0,0,0,224),INTRAFONT_ALIGN_CENTER);
+	oslSetFont(f);
+	height[1] = osl_curFont->charHeight;
+	//width = oslGetStringWidth(text);
+	
+	
+		// initial score calculation
+	for (i=1;i<(level-1)*2;i++) {
+		Score+= 10*(TIMEUNIT/60)*(i*2-1);
+		Score+= 10*(TIMEUNIT/60)*(i*2);
+	}
+	if (sublevel) {
+		Score+= 10*(TIMEUNIT/60)*(level*2-1);
+	}
+	
+	
+	
 	// sets lightning bolts's locations
 	for (i=LEFT; i<DOWN+1; i++)
 	{
@@ -104,20 +124,20 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 
 	// sets corresponding background (darker at each level/stage) and difficulty
 	if (level == 1)	{
-		if (sublevel == false)	maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = TIMEUNIT*(level*2-1), bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
-		else	maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
+		if (sublevel == false)	maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = TIMEUNIT*(level*2-1), timeLevel = (TIMEUNIT)*(level*2-1) - (TIMEUNIT)*(level - 1)*2, bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
+		else	maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, timeLevel = (TIMEUNIT)*(level*2) - (TIMEUNIT)*(level*2 - 1), bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
 	}
 	else if (level == 2)	{
-		if (sublevel == false)	maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
-		else	hitDelay = 35, maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
+		if (sublevel == false)	maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), timeLevel = (TIMEUNIT)*(level*2-1) - (TIMEUNIT)*(level - 1)*2, bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
+		else	hitDelay = 35, maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, timeLevel = (TIMEUNIT)*(level*2) - (TIMEUNIT)*(level*2 - 1), bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
 	}
 	else if (level == 3)	{
-		if (sublevel == false)	hitDelay = 35, maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
-		else	hitDelay = 40, maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
+		if (sublevel == false)	hitDelay = 35, maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), timeLevel = (TIMEUNIT)*(level*2-1) - (TIMEUNIT)*(level - 1)*2, bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
+		else	hitDelay = 40, maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, timeLevel = (TIMEUNIT)*(level*2) - (TIMEUNIT)*(level*2 - 1), bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
 	}
 	else	{
-		if (sublevel == false)	hitDelay = 40, maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
-		else	hitDelay = 45, maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
+		if (sublevel == false)	hitDelay = 40, maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), timeLevel = (TIMEUNIT)*(level*2-1) - (TIMEUNIT)*(level - 1)*2, bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
+		else	hitDelay = 45, maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, timeLevel = (TIMEUNIT)*(level*2) - (TIMEUNIT)*(level*2 - 1), bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
 	}
 
 
@@ -370,12 +390,25 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 					}
 
 
-					time++;
-
-
 					oslSetAlpha(OSL_FX_TINT, RGBA(253+((2*(100-Over.life))/100), 255-((255*(100-Over.life))/100), 117-((117*(100-Over.life))/100), 255));
 					oslDrawImage(player);
 					oslSetAlpha(OSL_FX_DEFAULT, 0);
+					
+					sprintf(score, "Score : %d", Score+(time/60)*10);
+					sprintf(health, "Health : %3d%%", Over.life);
+					oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,255), RGBA(0,0,0,224),INTRAFONT_ALIGN_LEFT);
+					oslDrawString(20, 12, score);
+					oslDrawString(20, 12+height[0]+0, health);
+					
+					oslSetAlpha(OSL_FX_ALPHA, 96);
+					oslDrawGradientRect(0,HEIGHT - (HEIGHT/16 + HEIGHT/32),WIDTH,HEIGHT,bgColor,bgColor,bgColor,bgColor);
+					oslSetAlpha(OSL_FX_ALPHA, 48);
+					oslDrawFillRect(0 + 2,HEIGHT - (HEIGHT/16 + HEIGHT/32)+ 2,((WIDTH - 2)*((100 - ((timeLimit - time)*100)/timeLimit)/PREVIEW))/(100/PREVIEW),HEIGHT - 2,RGB(8,8,8));
+					sprintf(score, "%3d", ((100 - ((timeLimit - time)*100)/timeLimit)/PREVIEW)*PREVIEW);
+					oslIntraFontSetStyle(f, 0.7f,RGBA(192,192,192,224), RGBA(0,0,0,224),INTRAFONT_ALIGN_CENTER);
+					oslDrawString(WIDTH/2, (HEIGHT - (HEIGHT/16 + HEIGHT/32) + HEIGHT - height[1]/2)/2 - 1, score);
+					oslSetAlpha(OSL_FX_DEFAULT, 0);
+					
 					oslEndDrawing();
 					oslEndFrame();
 					oslSyncFrame();
@@ -401,7 +434,11 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 
 				k++;
 			}
+			
+			time++;
+			
 			redraw = 1;
+			
 			if (delta[0] <245) delta[0]+= 10;
 			else delta[0] = 255;
 			if (delta[1] <245) delta[1]+= 10;
