@@ -26,6 +26,9 @@ int main ()
 	Bg_col.g = 151;
 	Bg_col.b = 191;
 	
+	if (load(&bg_col_m, &difficulty))	bgstartColor = RGBA(6*(Bg_col.r)*(bg_col_m),6*(Bg_col.g)*(bg_col_m),6*(Bg_col.b)*(bg_col_m),255);
+	
+	
 	oslInit(0);
 
 	oslInitGfx(OSL_PF_8888, 1);
@@ -69,7 +72,8 @@ int main ()
 
 		if(osl_pad.pressed.cross || osl_pad.pressed.start)
 		{
-			if (menu(fx, mstart, &returned, &bg_col_m, &Bg_col, f, &bgstartColor, bgstart,start,&alpha, &difficulty)) {
+			if (menu(won, fx, mstart, &returned, &bg_col_m, &Bg_col, f, &bgstartColor, bgstart,start,&alpha, &difficulty)) {
+				oslStopSound(fx);
 				oslStopSound(mstart);
 				play(congrats, won, appear, fx, critic, hurt, &Bg_col, &bg_col_m, mgame, f, difficulty);
 				returned = true;
