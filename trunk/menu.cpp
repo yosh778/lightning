@@ -13,7 +13,7 @@ by Yosh alias Hitman_07
 #include "menu.h"
 
 
-int menu(OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, OSL_IMAGE *bgstart, OSL_IMAGE *start, int *alpha_, int* difficulty)
+int menu(OSL_SOUND *won, OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, OSL_IMAGE *bgstart, OSL_IMAGE *start, int *alpha_, int* difficulty)
 {
 	bool menu_on = true, launch = false, go_up = false;
 	int alpha, beta = 255, i, strHeight, menuPosX, curpos = 0;
@@ -108,7 +108,7 @@ int menu(OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *bg_col_m, Color 
 			launch = true;
 		}
 		else if (curpos == SETTINGS && osl_pad.held.cross) {
-			settings(fx, mstart, returned, bg_col_m, Bg_col, f, bgstartColor, difficulty);
+			settings(won, fx, mstart, returned, bg_col_m, Bg_col, f, bgstartColor, difficulty);
 			curpos = 0;
 		}
 		else if (curpos == CREDITS && osl_pad.held.cross) {

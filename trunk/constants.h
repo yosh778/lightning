@@ -24,7 +24,7 @@ by Yosh alias Hitman_07
 # define LAG_MENU ((HEIGHT - 2*BORDER_MENU - NB_MENU_ELMTS*strHeight) / (NB_MENU_ELMTS - 1))
 # define MENUPOSY (BORDER_MENU + (i)*(strHeight + LAG_MENU))
 
-# define BORDER_SETT 50
+# define BORDER_SETT 40
 # define LAG_SETT 7  //((HEIGHT - 2*BORDER_SETT - 5*modeHeight) / (5 - 1))
 # define SETTPOSY (BORDER_SETT + BORDER_SETT/2 + (i)*(modeHeight + LAG_SETT))
 /*																			//mode: horizontal display

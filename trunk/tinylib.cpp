@@ -151,14 +151,16 @@ bool overScreen(OSL_SOUND *congrats, OSL_FONT *f, bool over) {
 		oslEndFrame();
 		oslSyncFrame();
 		alpha+= 10;
-		if (alpha >254) {
-			if (over && !played)	oslPlaySound(congrats, 7), played = true;
+		if (alpha >255) {
 			alpha = 255;
+		}
+		if (alpha >128) {
+			if (over && !played)	oslPlaySound(congrats, 7), played = true;
 		}
 	}
 
 	alpha = 66;
-	
+
 	while ((alpha <255) && !osl_quit) {
 
 		oslStartDrawing();
@@ -222,12 +224,12 @@ bool quitScreen(OSL_FONT *f) {
 	return quit;
 }
 
-void settings(OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, int *difficulty) {
+void settings(OSL_SOUND *won, OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *bg_col_m, Color *Bg_col, OSL_FONT *f, OSL_COLOR *bgstartColor, int *difficulty) {
 
 	bool menu_on = true, go_up = false;
 	int alpha, /*beta = 0, */i, strHeight, modeHeight, settPosX = WIDTH/2, set_mode = false, titleHeight, menuPosX, curpos = 1;
-	char *str_menu[4], *str_mode[4], *mod_color = "<-Change menu color->";
-	str_menu[0] = "Settings", str_menu[1] = "Difficulty", str_menu[2] = "Change menu color", str_menu[3] = "Help"; //str_menu[3] = "Load", str_menu[4] = "Save";
+	char *str_menu[6], *str_mode[4], *mod_color = "<-Change Skin->";
+	str_menu[0] = "Settings", str_menu[1] = "Difficulty", str_menu[2] = "Change Skin", str_menu[3] = "Load", str_menu[4] = "Save", str_menu[5] = "Help";
 	str_mode[0] = "Easy", str_mode[1] = "Normal", str_mode[2] = "Hard", str_mode[3] = "God";
 
 	menuPosX = WIDTH/2;
@@ -268,8 +270,8 @@ void settings(OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *bg_col_m, C
 	while (menu_on && !osl_quit) {
 
 		oslReadKeys();
-		
-		
+
+
 		strtsnd_if(fx, mstart, returned);
 
 		if (set_mode) {
@@ -296,7 +298,7 @@ void settings(OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *bg_col_m, C
 				if(oslGetSoundChannel(fx) != -1)	oslStopSound(fx);
 				oslPlaySound(fx, 2);
 				curpos--;
-				if (curpos < 1)	curpos = 3;
+				if (curpos < 1)	curpos = 5;
 			}
 
 			if (osl_pad.pressed.down)
@@ -304,7 +306,7 @@ void settings(OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *bg_col_m, C
 				if(oslGetSoundChannel(fx) != -1)	oslStopSound(fx);
 				oslPlaySound(fx, 2);
 				curpos++;
-				if (curpos >3)	curpos = 1;
+				if (curpos >5)	curpos = 1;
 			}
 		}
 
@@ -320,7 +322,7 @@ void settings(OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *bg_col_m, C
 			i = 0;
 			oslIntraFontSetStyle(f, 1.25f,RGBA(224,224,224,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
 			oslDrawString(settPosX, BORDER_SETT + 10, str_menu[0]);
-			for (i=1; i<4; i++) {
+			for (i=1; i<6; i++) {
 				if ((curpos == i)&& (curpos != SET_COL+1)) {
 					oslIntraFontSetStyle(f, 1.f,RGBA(alpha,alpha,alpha,255), RGBA((255-alpha)/3,(255-alpha)/3,(255-alpha)/3,128),INTRAFONT_ALIGN_CENTER);
 					oslDrawString(settPosX, SETTPOSY, str_menu[i]);
@@ -354,7 +356,7 @@ void settings(OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *bg_col_m, C
 		oslEndFrame();
 		oslSyncFrame();
 
-		
+
 		if (!set_mode && osl_pad.pressed.circle) {
 			menu_on = false;
 		}
@@ -386,11 +388,16 @@ void settings(OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *bg_col_m, C
 			}
 			*bgstartColor = RGBA(6*(Bg_col->r)*(*bg_col_m),6*(Bg_col->g)*(*bg_col_m),6*(Bg_col->b)*(*bg_col_m),255);
 		}
-		/*else if (curpos == SET_LOAD+1 && osl_pad.pressed.cross) {
-
+		else if (curpos == SET_LOAD+1 && osl_pad.pressed.cross) {
+			oslPlaySound(won, 6);
+			if (load(bg_col_m, difficulty))	*bgstartColor = RGBA(6*(Bg_col->r)*(*bg_col_m),6*(Bg_col->g)*(*bg_col_m),6*(Bg_col->b)*(*bg_col_m),255), sv_info(f, bg_col_m, Bg_col, false, true, bgstartColor);
+			else	sv_info(f, bg_col_m, Bg_col, false, false, bgstartColor);
 		}
 		else if (curpos == SET_SAVE+1 && osl_pad.pressed.cross) {
-		}*/
+			oslPlaySound(won, 6);
+			if (save(bg_col_m, difficulty)) sv_info(f, bg_col_m, Bg_col, true, true, bgstartColor);
+			else	sv_info(f, bg_col_m, Bg_col, true, false, bgstartColor);
+		}
 
 		if (go_up)	alpha+= 5;
 		else	alpha-= 5;
@@ -402,68 +409,122 @@ void settings(OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *bg_col_m, C
 
 }
 
-/*
-int load(Color *Bg_col, int *difficulty)
+
+bool load(int *bg_col_m, int *difficulty)
 {
-    FILE* file = NULL;
-    char fileline[1*(1+1)+3*(3+1)+1] = {0};
-	char *bg_col[3];
-    int i, j, nb;
+	FILE* file = NULL;
+	char fileline[6];
 
-    file = fopen("res/lightning", "r");
-    if (file == NULL)
-        return 0;
+	file = fopen("res/lightning", "r");
+
+	if (file == NULL)
+		return false;
+
+	if (fgets(fileline, 5, file) == NULL)
+		return false;
 
 
-    if (fgets(fileline, (14), file) == NULL)
-        return false;
+	if (fileline[0] == '0')	*difficulty = EASY;
+	else if (fileline[0] == '1')	*difficulty = NORMAL;
+	else if (fileline[0] == '2')	*difficulty = HARD;
+	else if (fileline[0] == '3')	*difficulty = GOD;
+	
+	
+	*bg_col_m = 0;
+	
+	if (fileline[1] != '.')	{
+		if (fileline[1] == '0')	*bg_col_m+= 0;
+		else if (fileline[1] == '1')	*bg_col_m+= 1;
+		else if (fileline[1] == '2')	*bg_col_m+= 2;
+		else if (fileline[1] == '3')	*bg_col_m+= 3;
+		else if (fileline[1] == '4')	*bg_col_m+= 4;
+		else if (fileline[1] == '5')	*bg_col_m+= 5;
+		else if (fileline[1] == '6')	*bg_col_m+= 6;
+		else if (fileline[1] == '7')	*bg_col_m+= 7;
+		else if (fileline[1] == '8')	*bg_col_m+= 8;
+		else if (fileline[1] == '9')	*bg_col_m+= 9;
+		
+		if (fileline[2] != '.')	{
+			*bg_col_m*= 10;
+			if (fileline[2] == '0')	*bg_col_m+= 0;
+			else if (fileline[2] == '1')	*bg_col_m+= 1;
+			else if (fileline[2] == '2')	*bg_col_m+= 2;
+			else if (fileline[2] == '3')	*bg_col_m+= 3;
+			else if (fileline[2] == '4')	*bg_col_m+= 4;
+			else if (fileline[2] == '5')	*bg_col_m+= 5;
+			else if (fileline[2] == '6')	*bg_col_m+= 6;
+			else if (fileline[2] == '7')	*bg_col_m+= 7;
+			else if (fileline[2] == '8')	*bg_col_m+= 8;
+			else if (fileline[2] == '9')	*bg_col_m+= 9;
 
-	*difficulty = atoi(fileline[0]);
-
-	while (fileline[i] != '/') {i++;}
-	i++;
-	while (fileline[i] != '_') {
-		bg_col[0] += fileline[i];
-		i++;
+			if (fileline[3] != '.')	{
+				*bg_col_m*= 10;
+				if (fileline[3] == '0')	*bg_col_m+= 0;
+				else if (fileline[3] == '1')	*bg_col_m+= 1;
+				else if (fileline[3] == '2')	*bg_col_m+= 2;
+				else if (fileline[3] == '3')	*bg_col_m+= 3;
+				else if (fileline[3] == '4')	*bg_col_m+= 4;
+				else if (fileline[3] == '5')	*bg_col_m+= 5;
+				else if (fileline[3] == '6')	*bg_col_m+= 6;
+				else if (fileline[3] == '7')	*bg_col_m+= 7;
+				else if (fileline[3] == '8')	*bg_col_m+= 8;
+				else if (fileline[3] == '9')	*bg_col_m+= 9;
+			}
+		}
 	}
-	i++;
-	while (fileline[i] != '_') {
-		bg_col[1] += fileline[i];
-		i++;
-	}
-	i++;
-	while (fileline[i] != '.') {
-		bg_col[2] += fileline[i];
-		i++;
-	}
 
-
-    fclose(file);
-    return true;
+	fclose(file);
+	return true;
 }
 
-int save(Color *Bg_col, int *difficulty)
+bool save(int *bg_col_m, int *difficulty)
 {
-    FILE* file = NULL;
-    int i, j, nb;
+	FILE* file = NULL;
 
-    file = fopen("res/lightning", "r+");
-    if (file == NULL)
-        return false;
+	file = fopen("res/lightning", "w+");
+	if (file == NULL)
+		return false;
 
-	fprintf(file, "%d/", *difficulty);
-	fprintf(file, "%d_", Bg_col->r);
-	fprintf(file, "%d_", Bg_col->g);
-	fprintf(file, "%d.", Bg_col->b);
+	fprintf(file, "%d", *difficulty);
+	fprintf(file, "%d.", *bg_col_m);
 
 
-    fclose(file);
-    return true;
+	fclose(file);
+	return true;
 }
-*/
+
 
 bool strtsnd_if(OSL_SOUND *to_wait, OSL_SOUND *to_play, bool *returned) {
 
-		if (*returned)	if(oslGetSoundChannel(to_wait) == -1)	oslPlaySound(to_play, 0), oslSetSoundLoop(to_play, 1), *returned = false;;
-		return returned;
+	if (*returned)	if(oslGetSoundChannel(to_wait) == -1)	oslPlaySound(to_play, 0), oslSetSoundLoop(to_play, 1), *returned = false;;
+	return returned;
+}
+
+void sv_info(OSL_FONT *f, int *bg_col_m, Color *Bg_col, bool save, bool success, OSL_COLOR *bgstartColor) {
+	
+	int Height;
+	
+	oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,255), RGBA(0,0,0,255),INTRAFONT_ALIGN_CENTER);
+	oslSetFont(f);
+	Height = osl_curFont->charHeight;
+
+	oslReadKeys();
+	while (!(osl_pad.pressed.start || osl_pad.pressed.cross || osl_pad.pressed.circle) && !osl_quit) {
+
+		oslReadKeys();
+		oslStartDrawing();
+		oslDrawGradientRect(0,0,WIDTH,HEIGHT,*bgstartColor,*bgstartColor,RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)),*bgstartColor);
+		oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,255), RGBA(0,0,0,255),INTRAFONT_ALIGN_CENTER);
+		if (save) {
+			if (success)	oslDrawString(WIDTH/2, (HEIGHT - Height/2)/2, "Save completed");
+			else	oslDrawString(WIDTH/2, (HEIGHT - Height/2)/2, "Save failed");
+		}
+		else {
+			if (success)	oslDrawString(WIDTH/2, (HEIGHT - Height/2)/2, "Load completed");
+			else	oslDrawString(WIDTH/2, (HEIGHT - Height/2)/2, "Load failed");
+		}
+		oslEndDrawing();
+		oslEndFrame();
+		oslSyncFrame();
+	}
 }

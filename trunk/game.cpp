@@ -44,8 +44,8 @@ int play(OSL_SOUND *congrats, OSL_SOUND *won, OSL_SOUND *appear, OSL_SOUND *fx, 
 		Over = gameLevel(fx, critic, hurt, mgame, Bg_col, bg_col_m, f, hitDmg, level, sublevel, bgColor, player);
 
 		if (!Over.quit) {
-			if (Over.life >0 && !(level == 4 && sublevel)) {
-				oslPlaySound(won, 6);
+			if (Over.life >0) {
+				if (!(level == 4 && sublevel))	oslPlaySound(won, 6);
 				if (sublevel)	level ++;
 				sublevel = !sublevel;
 			}
@@ -53,9 +53,16 @@ int play(OSL_SOUND *congrats, OSL_SOUND *won, OSL_SOUND *appear, OSL_SOUND *fx, 
 		}
 	}
 
-
+	oslStopSound(appear);
+	oslStopSound(fx);
+	oslStopSound(hurt);
+	oslStopSound(critic);
+	oslStopSound(won);
+	oslStopSound(congrats);
 	oslStopSound(mgame);
-	if (level == 4)	overScreen(congrats, f, true);
+	
+	if (level >4)	overScreen(congrats, f, true);
+	
 
 
 	oslDeleteImage(player);
@@ -217,18 +224,8 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 		}
 
 
-		for (i=0; i<4; i++) {
-			tboltOn[i] = false;
-		}
-
-		if (boltOn[LEFT][0] && boltOn[UP][0])	boltOn[LEFT][0] = 0, boltOn[UP][0] = 0, tboltOn[0] = true;
-		if (boltOn[RIGHT][0] && boltOn[UP][3])	boltOn[RIGHT][0] = 0, boltOn[UP][3] = 0, tboltOn[1] = true;
-		if (boltOn[LEFT][1] && boltOn[DOWN][0])	boltOn[LEFT][1] = 0, boltOn[DOWN][0] = 0, tboltOn[2] = true;
-		if (boltOn[RIGHT][1] && boltOn[DOWN][3])	boltOn[RIGHT][1] = 0, boltOn[DOWN][3] = 0, tboltOn[3] = true;
-
-
-			// erases some bolts if all up and down were activated
-		if (boltOn[UP][0] && boltOn[UP][1] && boltOn[UP][2] && boltOn[UP][3] && boltOn[DOWN][0] && boltOn[DOWN][1] && boltOn[DOWN][2] && boltOn[DOWN][3]) {
+			// erases some bolts if all up and 3 down were activated
+		if (boltOn[UP][0] && boltOn[UP][1] && boltOn[UP][2] && boltOn[UP][3] && boltOn[DOWN][0] && boltOn[DOWN][1] && boltOn[DOWN][2]) {
 			j = rand()%8;
 			if (j <4) {
 				boltOn[UP][j] = 0;
@@ -238,6 +235,48 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 				boltOn[DOWN][j] = 0, boltOn[DOWN][j+1] = 0;
 			}
 		}
+		else if (boltOn[UP][0] && boltOn[UP][1] && boltOn[UP][2] && boltOn[UP][3] && boltOn[DOWN][0] && boltOn[DOWN][1] && boltOn[DOWN][3]) {
+			j = rand()%8;
+			if (j <4) {
+				boltOn[UP][j] = 0;
+			}
+			else {
+				j = rand()%3;
+				boltOn[DOWN][j] = 0, boltOn[DOWN][j+1] = 0;
+			}
+		}
+		else if (boltOn[UP][0] && boltOn[UP][1] && boltOn[UP][2] && boltOn[UP][3] && boltOn[DOWN][0] && boltOn[DOWN][2] && boltOn[DOWN][3]) {
+			j = rand()%8;
+			if (j <4) {
+				boltOn[UP][j] = 0;
+			}
+			else {
+				j = rand()%3;
+				boltOn[DOWN][j] = 0, boltOn[DOWN][j+1] = 0;
+			}
+		}
+		else if (boltOn[UP][0] && boltOn[UP][1] && boltOn[UP][2] && boltOn[UP][3] && boltOn[DOWN][1] && boltOn[DOWN][2] && boltOn[DOWN][3]) {
+			j = rand()%8;
+			if (j <4) {
+				boltOn[UP][j] = 0;
+			}
+			else {
+				j = rand()%3;
+				boltOn[DOWN][j] = 0, boltOn[DOWN][j+1] = 0;
+			}
+		}
+
+		
+		for (i=0; i<4; i++) {
+			tboltOn[i] = false;
+		}
+
+		if (boltOn[LEFT][0] && boltOn[UP][0])	boltOn[LEFT][0] = 0, boltOn[UP][0] = 0, tboltOn[0] = true;
+		if (boltOn[RIGHT][0] && boltOn[UP][3])	boltOn[RIGHT][0] = 0, boltOn[UP][3] = 0, tboltOn[1] = true;
+		if (boltOn[LEFT][1] && boltOn[DOWN][0])	boltOn[LEFT][1] = 0, boltOn[DOWN][0] = 0, tboltOn[2] = true;
+		if (boltOn[RIGHT][1] && boltOn[DOWN][3])	boltOn[RIGHT][1] = 0, boltOn[DOWN][3] = 0, tboltOn[3] = true;
+
+		
 			// to prevent bolts from touching each other
 		else if (boltOn[LEFT][0] && boltOn[UP][1]) {
 			boltOn[LEFT][0] = 0, boltOn[UP][1] = 0, tboltOn[0] = true;
