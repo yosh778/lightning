@@ -244,7 +244,6 @@ void settings(OSL_SOUND *won, OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, 
 	oslSetFont(f);
 	modeHeight = osl_curFont->charHeight;
 
-	oslSetKeyAnalogToDPad(PAD_SENS);
 
 
 	/*
