@@ -126,6 +126,7 @@ int menu(OSL_SOUND *won, OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *
 	}
 
 	oslSetKeyAutorepeat(NULL,0,0);
+	oslSetKeyAnalogToDPad(0);
 	oslDeleteImage(menu_bg);
 
 

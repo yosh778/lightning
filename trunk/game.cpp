@@ -26,7 +26,6 @@ int play(OSL_SOUND *congrats, OSL_SOUND *won, OSL_SOUND *appear, OSL_SOUND *fx, 
 	Result Over;
 	Over.quit = false;
 
-	oslSetKeyAnalogToDPad(PAD_SENS);
 
 	oslPlaySound(mgame, 1);
 	oslSetSoundLoop(mgame, 1);
@@ -314,7 +313,9 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 		while (((time - oldTime) <TIMEDELAY) && playing && !osl_quit) {
 
 			oslReadKeys();
+			
 			// moving statements
+			if (osl_pad.held.left || osl_pad.held.right || osl_pad.held.up || osl_pad.held.down) {
 			if (osl_pad.held.left)
 			{
 				player->x = player->x - MOVE_STEP;
@@ -338,7 +339,33 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 				player->y = player->y + MOVE_STEP;
 				if (player->y > HEIGHT-player->sizeY)	player->y = HEIGHT-player->sizeY;
 			}
-
+			}
+			
+			else {
+			
+				if (osl_pad.analogX >PAD_SENS_) {
+				player->x = player->x + (MOVE_STEP*(osl_pad.analogX-PAD_SENS_))/(128-PAD_SENS_);
+				if (player->x < 0)	player->x = 0;
+				else if (player->x > WIDTH-player->sizeX)	player->x = WIDTH-player->sizeX;
+				}
+				else if (-osl_pad.analogX >PAD_SENS_) {
+				player->x = player->x + (MOVE_STEP*(osl_pad.analogX+PAD_SENS_))/(128-PAD_SENS_);
+				if (player->x < 0)	player->x = 0;
+				else if (player->x > WIDTH-player->sizeX)	player->x = WIDTH-player->sizeX;
+				}
+				
+				if (osl_pad.analogY >PAD_SENS_) {
+				player->y = player->y + (MOVE_STEP*(osl_pad.analogY-PAD_SENS_))/(128-PAD_SENS_);
+				if (player->y < 0)	player->y = 0;
+				else if (player->y > HEIGHT-player->sizeY)	player->y = HEIGHT-player->sizeY;
+				}
+				else if (-osl_pad.analogY >PAD_SENS_) {
+				player->y = player->y + (MOVE_STEP*(osl_pad.analogY+PAD_SENS_))/(128-PAD_SENS_);
+				if (player->y < 0)	player->y = 0;
+				else if (player->y > HEIGHT-player->sizeY)	player->y = HEIGHT-player->sizeY;
+				}
+			}
+			
 			k = 0;
 			while (k <redraw && !osl_quit) {
 				if (!Over.quit) {

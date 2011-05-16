@@ -13,6 +13,7 @@ by Yosh alias Hitman_07
 // main syst
 # define WIDTH 480
 # define HEIGHT 272
+# define PAD_SENS_ 20
 # define PAD_SENS 80
 # define HITUNIT 30
 # define HITDMG 1
