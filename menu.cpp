@@ -112,6 +112,7 @@ int menu(OSL_SOUND *won, OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *
 			curpos = 0;
 		}
 		else if (curpos == CREDITS && osl_pad.held.cross) {
+        credits(f, bg_col_m, Bg_col, bgstartColor);
 		}
 		else if (curpos == QUIT && osl_pad.pressed.cross) {
 			menu_on = false;
