@@ -62,7 +62,7 @@ int menu(OSL_SOUND *won, OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *
 
 		oslReadKeys();
 
-		
+
 		strtsnd_if(fx, mstart, returned);
 
 		if (osl_pad.pressed.up)
@@ -107,12 +107,13 @@ int menu(OSL_SOUND *won, OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *
 			menu_on = false;
 			launch = true;
 		}
-		else if (curpos == SETTINGS && osl_pad.held.cross) {
+		else if (curpos == SETTINGS && osl_pad.pressed.cross) {
 			settings(won, fx, mstart, returned, bg_col_m, Bg_col, f, bgstartColor, difficulty);
 			curpos = 0;
 		}
-		else if (curpos == CREDITS && osl_pad.held.cross) {
-        credits(f, bg_col_m, Bg_col, bgstartColor);
+		else if (curpos == CREDITS && osl_pad.pressed.cross) {
+			credits(f, bg_col_m, Bg_col, bgstartColor);
+			curpos = 0;
 		}
 		else if (curpos == QUIT && osl_pad.pressed.cross) {
 			menu_on = false;
@@ -123,7 +124,7 @@ int menu(OSL_SOUND *won, OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, int *
 
 		if (alpha <112)	go_up = true, alpha = 112;
 		else if (alpha > 255)	go_up = false, alpha = 255;
-		
+
 	}
 
 	oslSetKeyAutorepeat(NULL,0,0);
