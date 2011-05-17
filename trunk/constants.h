@@ -64,7 +64,7 @@ by Yosh alias Hitman_07
 enum {LEFT, RIGHT, UP, DOWN};
 enum {EASY, NORMAL, HARD, GOD};
 enum {PLAY, SETTINGS, CREDITS, QUIT};
-enum {SET_MODE, SET_COL, SET_LOAD, SET_SAVE};
+enum {SET_MODE, SET_COL, SET_LOAD, SET_SAVE, SET_HELP};
 
 typedef struct {
 	int x;
