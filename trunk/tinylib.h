@@ -20,5 +20,6 @@ bool load(int *bg_col_m, int *difficulty);
 bool save(int *bg_col_m, int *difficulty);
 bool strtsnd_if(OSL_SOUND *cancel, OSL_SOUND *mstart, bool *returned);
 void sv_info(OSL_FONT *f, int *bg_col_m, Color *Bg_col, bool save, bool success, OSL_COLOR *bgstartColor);
+void credits(OSL_FONT *f, int *bg_col_m, Color *Bg_col, OSL_COLOR *bgstartColor);
 
 # endif
