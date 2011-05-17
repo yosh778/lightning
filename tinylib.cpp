@@ -397,7 +397,10 @@ void settings(OSL_SOUND *won, OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, 
 			if (save(bg_col_m, difficulty)) sv_info(f, bg_col_m, Bg_col, true, true, bgstartColor);
 			else	sv_info(f, bg_col_m, Bg_col, true, false, bgstartColor);
 		}
-
+		else if (curpos == SET_HELP+1 && osl_pad.pressed.cross) {
+         help(f, bg_col_m, Bg_col, bgstartColor);
+		}
+      
 		if (go_up)	alpha+= 5;
 		else	alpha-= 5;
 
@@ -552,6 +555,35 @@ void credits(OSL_FONT *f, int *bg_col_m, Color *Bg_col, OSL_COLOR *bgstartColor)
       oslDrawString(WIDTH/16, BORDER_SETT + 10 + Height0 + 4 + 3 + Height1 , "BenHur for the intraFont, Brunni for his OSlib");
       oslDrawString(WIDTH/16, BORDER_SETT + 10 + Height0 + 4 + (Height1 + 3)*2 , "mstart");
       oslDrawString(WIDTH/16, BORDER_SETT + 10 + Height0 + 4 + (Height1 + 3)*3 , "mgame");
+		oslEndDrawing();
+		oslEndFrame();
+		oslSyncFrame();
+	}
+}
+
+void help(OSL_FONT *f, int *bg_col_m, Color *Bg_col, OSL_COLOR *bgstartColor) {
+	
+	int Height0, Height1;
+	
+	oslIntraFontSetStyle(f, 1.25f,RGBA(224,224,224,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
+	oslSetFont(f);
+	Height0 = osl_curFont->charHeight;
+	oslIntraFontSetStyle(f, 0.8f,RGBA(192,192,192,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_LEFT);
+	oslSetFont(f);
+	Height1 = osl_curFont->charHeight;
+
+	oslReadKeys();
+	while (!(osl_pad.pressed.start || osl_pad.pressed.cross || osl_pad.pressed.circle) && !osl_quit) {
+
+		oslReadKeys();
+		oslStartDrawing();
+		oslDrawGradientRect(0,0,WIDTH,HEIGHT,*bgstartColor,*bgstartColor,RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)),*bgstartColor);
+		oslIntraFontSetStyle(f, 1.25f,RGBA(224,224,224,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
+		oslDrawString(WIDTH/2, BORDER_SETT + 10, "Help");
+		oslIntraFontSetStyle(f, 0.8f,RGBA(192,192,192,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_LEFT);
+      oslDrawString(WIDTH/16, BORDER_SETT + 10 + Height0 + 3 , "You must escape incoming thunder bolts in approximatively");
+      oslDrawString(WIDTH/16, BORDER_SETT + 10 + Height0 + 3 + (Height1 + 3) , "a half second after their appearance or you'll get hurt, and eventually die. Your difficulty choice determines how powerful the thunder is.");
+      //oslDrawString(WIDTH/16, BORDER_SETT + 10 + Height0 + 3 + (Height1 + 3)*2 , "");
 		oslEndDrawing();
 		oslEndFrame();
 		oslSyncFrame();
