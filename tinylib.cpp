@@ -587,7 +587,7 @@ void help(OSL_FONT *f, int *bg_col_m, Color *Bg_col, OSL_COLOR *bgstartColor) {
 		oslIntraFontSetStyle(f, 1.25f,RGBA(224,224,224,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
 		oslDrawString(WIDTH/2, BORDER_SETT + 10, "Help");
 		oslIntraFontSetStyle(f, 0.8f,RGBA(192,192,192,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_LEFT);
-		oslDrawString(WIDTH/16, BORDER_SETT + 10 + 36 + Height0 + 3 , "You have to escape incoming thunder bolts about");
+		oslDrawString(WIDTH/16, BORDER_SETT + 10 + 36 + Height0 + 3 , "You have to escape incoming thunderbolts about");
 		oslDrawString(WIDTH/16, BORDER_SETT + 10 + 36 + Height0 + 3 + (Height1 + 0) , "a half second after their appearance or you'll get");
 		oslDrawString(WIDTH/16, BORDER_SETT + 10 + 36 + Height0 + 3 + (Height1 + 0)*2 , "hurt, and eventually die.");
 		oslDrawString(WIDTH/16, BORDER_SETT + 10 + 36 + Height0 + 3 + (Height1 + 0)*3 , "Difficulty determines how deathly the thunder'll be.");
