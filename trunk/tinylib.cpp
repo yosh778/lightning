@@ -184,7 +184,7 @@ bool quitScreen(OSL_FONT *f) {
 	bool quit = false, end = false;
 	int frame = 0, height[2];
 	char* str_quit[3];
-	str_quit[0] = "Quit Game ?", str_quit[1] = "X: Yes.", str_quit[2] = "O: No.";
+	str_quit[0] = "Quit Game ?", str_quit[1] = "X : Yes.", str_quit[2] = "O : No.";
 
 	oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,64), RGBA(0,0,0,64),INTRAFONT_ALIGN_CENTER);
 	oslSetFont(f);
@@ -398,9 +398,9 @@ void settings(OSL_SOUND *won, OSL_SOUND *fx, OSL_SOUND *mstart, bool *returned, 
 			else	sv_info(f, bg_col_m, Bg_col, true, false, bgstartColor);
 		}
 		else if (curpos == SET_HELP+1 && osl_pad.pressed.cross) {
-         help(f, bg_col_m, Bg_col, bgstartColor);
+			help(f, bg_col_m, Bg_col, bgstartColor);
 		}
-      
+
 		if (go_up)	alpha+= 5;
 		else	alpha-= 5;
 
@@ -430,10 +430,10 @@ bool load(int *bg_col_m, int *difficulty)
 	else if (fileline[0] == '1')	*difficulty = NORMAL;
 	else if (fileline[0] == '2')	*difficulty = HARD;
 	else if (fileline[0] == '3')	*difficulty = GOD;
-	
-	
+
+
 	*bg_col_m = 0;
-	
+
 	if (fileline[1] != '.')	{
 		if (fileline[1] == '0')	*bg_col_m+= 0;
 		else if (fileline[1] == '1')	*bg_col_m+= 1;
@@ -445,7 +445,7 @@ bool load(int *bg_col_m, int *difficulty)
 		else if (fileline[1] == '7')	*bg_col_m+= 7;
 		else if (fileline[1] == '8')	*bg_col_m+= 8;
 		else if (fileline[1] == '9')	*bg_col_m+= 9;
-		
+
 		if (fileline[2] != '.')	{
 			*bg_col_m*= 10;
 			if (fileline[2] == '0')	*bg_col_m+= 0;
@@ -503,9 +503,9 @@ bool strtsnd_if(OSL_SOUND *to_wait, OSL_SOUND *to_play, bool *returned) {
 }
 
 void sv_info(OSL_FONT *f, int *bg_col_m, Color *Bg_col, bool save, bool success, OSL_COLOR *bgstartColor) {
-	
+
 	int Height;
-	
+
 	oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,255), RGBA(0,0,0,255),INTRAFONT_ALIGN_CENTER);
 	oslSetFont(f);
 	Height = osl_curFont->charHeight;
@@ -532,15 +532,18 @@ void sv_info(OSL_FONT *f, int *bg_col_m, Color *Bg_col, bool save, bool success,
 }
 
 void credits(OSL_FONT *f, int *bg_col_m, Color *Bg_col, OSL_COLOR *bgstartColor) {
-	
-	int Height0, Height1;
-	
+
+	int Height0, Height1, Height2;
+
 	oslIntraFontSetStyle(f, 1.25f,RGBA(224,224,224,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
 	oslSetFont(f);
 	Height0 = osl_curFont->charHeight;
-	oslIntraFontSetStyle(f, 0.8f,RGBA(192,192,192,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_LEFT);
+	oslIntraFontSetStyle(f, 1.f,RGBA(192,192,192,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
 	oslSetFont(f);
 	Height1 = osl_curFont->charHeight;
+	oslIntraFontSetStyle(f, 0.8f,RGBA(192,192,192,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
+	oslSetFont(f);
+	Height2 = osl_curFont->charHeight;
 
 	oslReadKeys();
 	while (!(osl_pad.pressed.start || osl_pad.pressed.cross || osl_pad.pressed.circle) && !osl_quit) {
@@ -550,11 +553,14 @@ void credits(OSL_FONT *f, int *bg_col_m, Color *Bg_col, OSL_COLOR *bgstartColor)
 		oslDrawGradientRect(0,0,WIDTH,HEIGHT,*bgstartColor,*bgstartColor,RGB((Bg_col->r)*(*bg_col_m),(Bg_col->g)*(*bg_col_m),(Bg_col->b)*(*bg_col_m)),*bgstartColor);
 		oslIntraFontSetStyle(f, 1.25f,RGBA(224,224,224,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
 		oslDrawString(WIDTH/2, BORDER_SETT + 10, "Credits");
-		oslIntraFontSetStyle(f, 0.8f,RGBA(192,192,192,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_LEFT);
-      oslDrawString(WIDTH/16, BORDER_SETT + 10 + Height0 + 4, "  Special thanks to :");
-      oslDrawString(WIDTH/16, BORDER_SETT + 10 + Height0 + 4 + 3 + Height1 , "BenHur for the intraFont, Brunni for his OSlib");
-      oslDrawString(WIDTH/16, BORDER_SETT + 10 + Height0 + 4 + (Height1 + 3)*2 , "mstart");
-      oslDrawString(WIDTH/16, BORDER_SETT + 10 + Height0 + 4 + (Height1 + 3)*3 , "mgame");
+		oslIntraFontSetStyle(f, 1.f,RGBA(208,208,208,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
+		oslDrawString(WIDTH/2, BORDER_SETT + 18 + Height0 + 16, "Special thanks to :");
+		oslIntraFontSetStyle(f, 0.8f,RGBA(192,192,192,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
+		oslDrawString(WIDTH/2, BORDER_SETT + 18 + Height0 + 14 + 4 + Height1 + 8, "BenHur for the intraFont, Brunni for his OSlib");
+		oslDrawString(WIDTH/2, BORDER_SETT + 18 + Height0 + 14 + 4 + Height1 + (Height2 + 9), "Jakex09 for the current theme,  ' Survival '");
+		oslDrawString(WIDTH/2, BORDER_SETT + 18 + Height0 + 14 + 4 + Height1 + (Height2 + 9)*2 - 8, "Radman for the game theme,  ' Thunderstorm '");
+		oslIntraFontSetStyle(f, 0.8f,RGBA(255,255,255,255), RGBA(0,0,0,255),INTRAFONT_ALIGN_CENTER);
+		oslDrawString(WIDTH/2, HEIGHT-HEIGHT/5-2, "by Yosh, alias Hitman 07");
 		oslEndDrawing();
 		oslEndFrame();
 		oslSyncFrame();
@@ -562,13 +568,13 @@ void credits(OSL_FONT *f, int *bg_col_m, Color *Bg_col, OSL_COLOR *bgstartColor)
 }
 
 void help(OSL_FONT *f, int *bg_col_m, Color *Bg_col, OSL_COLOR *bgstartColor) {
-	
+
 	int Height0, Height1;
-	
+
 	oslIntraFontSetStyle(f, 1.25f,RGBA(224,224,224,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
 	oslSetFont(f);
 	Height0 = osl_curFont->charHeight;
-	oslIntraFontSetStyle(f, 0.8f,RGBA(192,192,192,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_LEFT);
+	oslIntraFontSetStyle(f, 0.8f,RGBA(192,192,192,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
 	oslSetFont(f);
 	Height1 = osl_curFont->charHeight;
 
@@ -581,9 +587,10 @@ void help(OSL_FONT *f, int *bg_col_m, Color *Bg_col, OSL_COLOR *bgstartColor) {
 		oslIntraFontSetStyle(f, 1.25f,RGBA(224,224,224,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_CENTER);
 		oslDrawString(WIDTH/2, BORDER_SETT + 10, "Help");
 		oslIntraFontSetStyle(f, 0.8f,RGBA(192,192,192,255), RGBA(0,0,0,160),INTRAFONT_ALIGN_LEFT);
-      oslDrawString(WIDTH/16, BORDER_SETT + 10 + Height0 + 3 , "You must escape incoming thunder bolts in approximatively");
-      oslDrawString(WIDTH/16, BORDER_SETT + 10 + Height0 + 3 + (Height1 + 3) , "a half second after their appearance or you'll get hurt, and eventually die. Your difficulty choice determines how powerful the thunder is.");
-      //oslDrawString(WIDTH/16, BORDER_SETT + 10 + Height0 + 3 + (Height1 + 3)*2 , "");
+		oslDrawString(WIDTH/16, BORDER_SETT + 10 + 36 + Height0 + 3 , "You have to escape incoming thunder bolts about");
+		oslDrawString(WIDTH/16, BORDER_SETT + 10 + 36 + Height0 + 3 + (Height1 + 0) , "a half second after their appearance or you'll get");
+		oslDrawString(WIDTH/16, BORDER_SETT + 10 + 36 + Height0 + 3 + (Height1 + 0)*2 , "hurt, and eventually die.");
+		oslDrawString(WIDTH/16, BORDER_SETT + 10 + 36 + Height0 + 3 + (Height1 + 0)*3 , "Difficulty determines how deathly the thunder'll be.");
 		oslEndDrawing();
 		oslEndFrame();
 		oslSyncFrame();
