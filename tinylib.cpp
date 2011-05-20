@@ -154,7 +154,7 @@ bool overScreen(OSL_SOUND *congrats, OSL_FONT *f, bool over) {
 		if (alpha >255) {
 			alpha = 255;
 		}
-		if (alpha >128) {
+		if (alpha >32) {
 			if (over && !played)	oslPlaySound(congrats, 7), played = true;
 		}
 	}
