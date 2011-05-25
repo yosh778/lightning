@@ -45,6 +45,10 @@ by Yosh alias Hitman_07
 # define BOLTLAG 58
 # define TBOLTLAG 36
 # define PROGRESS_LEVELCOL level
+# define HURT_COL_R 19
+# define HURT_COL_G 19
+# define HURT_COL_B 192
+
 
 
 //bolt disposition parameters
