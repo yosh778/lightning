@@ -280,40 +280,28 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 
 		
 			// to prevent bolts from touching each other
-		if (boltOn[LEFT][0] && boltOn[UP][1]) {
+		else if (boltOn[LEFT][0] && boltOn[UP][1]) {
 			boltOn[LEFT][0] = 0, boltOn[UP][1] = 0, tboltOn[0] = true;
 		}
-		if (boltOn[LEFT][1] && boltOn[UP][1]) {
-			boltOn[LEFT][1] = 0, boltOn[UP][1] = 0, tboltOn[0] = true;
-		}
-		if (boltOn[RIGHT][0] && boltOn[UP][2]) {
+		else if (boltOn[RIGHT][0] && boltOn[UP][2]) {
 			boltOn[RIGHT][0] = 0, boltOn[UP][2] = 0, tboltOn[1] = true;
 		}
-		if (boltOn[RIGHT][1] && boltOn[UP][2]) {
-			boltOn[RIGHT][1] = 0, boltOn[UP][2] = 0, tboltOn[1] = true;
-		}
-		if (boltOn[LEFT][0] && boltOn[DOWN][1]) {
-			boltOn[LEFT][0] = 0, boltOn[DOWN][1] = 0, tboltOn[2] = true;
-		}
-		if (boltOn[LEFT][1] && boltOn[DOWN][1]) {
+		else if (boltOn[LEFT][1] && boltOn[DOWN][1]) {
 			boltOn[LEFT][1] = 0, boltOn[DOWN][1] = 0, tboltOn[2] = true;
 		}
-		if (boltOn[RIGHT][0] && boltOn[DOWN][2]) {
-			boltOn[RIGHT][0] = 0, boltOn[DOWN][2] = 0, tboltOn[3] = true;
-		}
-		if (boltOn[RIGHT][1] && boltOn[DOWN][2]) {
+		else if (boltOn[RIGHT][1] && boltOn[DOWN][2]) {
 			boltOn[RIGHT][1] = 0, boltOn[DOWN][2] = 0, tboltOn[3] = true;
 		}
-		if (boltOn[LEFT][1] && boltOn[UP][0]) {
+		else if (boltOn[LEFT][1] && boltOn[UP][0]) {
 			boltOn[UP][0] = 0;
 		}
-		if (boltOn[RIGHT][1] && boltOn[UP][3]) {
+		else if (boltOn[RIGHT][1] && boltOn[UP][3]) {
 			boltOn[UP][3] = 0;
 		}
-		if (boltOn[LEFT][0] && boltOn[DOWN][0]) {
+		else if (boltOn[LEFT][0] && boltOn[DOWN][0]) {
 			boltOn[DOWN][0] = 0;
 		}
-		if (boltOn[RIGHT][0] && boltOn[DOWN][3]) {
+		else if (boltOn[RIGHT][0] && boltOn[DOWN][3]) {
 			boltOn[DOWN][3] = 0;
 		}
 		
@@ -385,7 +373,8 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 			while (k <redraw && !osl_quit) {
 				if (!Over.quit) {
 					oslStartDrawing();
-					oslDrawGradientRect(0,0,WIDTH,HEIGHT,bgColor,RGB(2,3,40),RGB(255,255,255),bgColor);
+					if (level == 4)	oslDrawGradientRect(0,0,WIDTH,HEIGHT,bgColor,RGB(0,0,0),RGB(64,64,64),bgColor);
+					else	oslDrawGradientRect(0,0,WIDTH,HEIGHT,bgColor,RGB(2,3,40),RGB(255,255,255),bgColor);
 
 					// draws images and checks collisions
 					for (i=LEFT; i<DOWN+1; i++)
@@ -471,7 +460,8 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 					}
 
 
-					oslSetAlpha(OSL_FX_TINT, RGBA(253+((2*(100-Over.life))/100), 255-((255*(100-Over.life))/100), 117-((117*(100-Over.life))/100), 255));
+					oslSetAlpha(OSL_FX_TINT, RGBA(253+(((HURT_COL_R-253)*(100-Over.life))/100), 255+(((HURT_COL_G-255)*(100-Over.life))/100), 117+(((HURT_COL_B-117)*(100-Over.life))/100), 255));
+					//oslSetAlpha(OSL_FX_TINT, RGBA(253+((2*(100-Over.life))/100), 255-((255*(100-Over.life))/100), 117-((117*(100-Over.life))/100), 255));
 					oslDrawImage(player);
 					oslSetAlpha(OSL_FX_DEFAULT, 0);
 					
@@ -508,7 +498,7 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 
 				else if (osl_pad.pressed.start || osl_pad.pressed.circle)	redraw = 2, game_quit = true;
 
-				else if (time >timeLimit/* || osl_pad.held.L*/)	redraw = 2, won_game = true;
+				else if (time >timeLimit/**/ || osl_pad.held.L/**/)	redraw = 2, won_game = true;
 
 				else if (Over.life == 0)	redraw = 2, lost_game = true;
 
