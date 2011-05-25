@@ -82,6 +82,7 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 	tbolt1=oslLoadImageFilePNG("./res/tbolt1.png",OSL_IN_RAM,OSL_PF_8888);
 	tbolt2=oslLoadImageFilePNG("./res/tbolt2.png",OSL_IN_RAM,OSL_PF_8888);
 	Address boltPos[4][4], tboltPos[4];
+	Color Progress;
 	Result Over;
 	Over.life = 100;
 	Over.quit = false;
@@ -142,10 +143,12 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 		else	hitDelay = 40, maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, timeLevel = (TIMEUNIT)*(level*2) - (TIMEUNIT)*(level*2 - 1), bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
 	}
 	else	{
-		if (sublevel == false)	hitDelay = 40, maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), timeLevel = (TIMEUNIT)*(level*2-1) - (TIMEUNIT)*(level - 1)*2, bgColor = RGBA((R_BG*(10-level*2-1))/8,(G_BG*(10-level*2-1))/8,(B_BG*(10-level*2-1))/8,255);
-		else	hitDelay = 45, maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, timeLevel = (TIMEUNIT)*(level*2) - (TIMEUNIT)*(level*2 - 1), bgColor = RGBA((R_BG*(10-level*2-2))/8,(G_BG*(10-level*2-2))/8,(B_BG*(10-level*2-2))/8,255);
+		if (sublevel == false)	hitDelay = 40, maxBoltX = MAXBOLTX/2, maxBoltY = MAXBOLTY/2, timeLimit = (TIMEUNIT)*(level*2-1), timeLevel = (TIMEUNIT)*(level*2-1) - (TIMEUNIT)*(level - 1)*2, bgColor = RGBA(16,16,16,255);
+		else	hitDelay = 45, maxBoltX = MAXBOLTX, maxBoltY = MAXBOLTY, timeLimit = (TIMEUNIT)*(level)*2, timeLevel = (TIMEUNIT)*(level*2) - (TIMEUNIT)*(level*2 - 1), bgColor = RGBA(0,0,0,255);
 	}
-
+	
+	oslRgbaGet8888(bgColor,Progress.r,Progress.g,Progress.b,n);
+	
 
 	oslReadKeys();
 
@@ -277,28 +280,40 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 
 		
 			// to prevent bolts from touching each other
-		else if (boltOn[LEFT][0] && boltOn[UP][1]) {
+		if (boltOn[LEFT][0] && boltOn[UP][1]) {
 			boltOn[LEFT][0] = 0, boltOn[UP][1] = 0, tboltOn[0] = true;
 		}
-		else if (boltOn[RIGHT][0] && boltOn[UP][2]) {
+		if (boltOn[LEFT][1] && boltOn[UP][1]) {
+			boltOn[LEFT][1] = 0, boltOn[UP][1] = 0, tboltOn[0] = true;
+		}
+		if (boltOn[RIGHT][0] && boltOn[UP][2]) {
 			boltOn[RIGHT][0] = 0, boltOn[UP][2] = 0, tboltOn[1] = true;
 		}
-		else if (boltOn[LEFT][1] && boltOn[DOWN][1]) {
+		if (boltOn[RIGHT][1] && boltOn[UP][2]) {
+			boltOn[RIGHT][1] = 0, boltOn[UP][2] = 0, tboltOn[1] = true;
+		}
+		if (boltOn[LEFT][0] && boltOn[DOWN][1]) {
+			boltOn[LEFT][0] = 0, boltOn[DOWN][1] = 0, tboltOn[2] = true;
+		}
+		if (boltOn[LEFT][1] && boltOn[DOWN][1]) {
 			boltOn[LEFT][1] = 0, boltOn[DOWN][1] = 0, tboltOn[2] = true;
 		}
-		else if (boltOn[RIGHT][1] && boltOn[DOWN][2]) {
+		if (boltOn[RIGHT][0] && boltOn[DOWN][2]) {
+			boltOn[RIGHT][0] = 0, boltOn[DOWN][2] = 0, tboltOn[3] = true;
+		}
+		if (boltOn[RIGHT][1] && boltOn[DOWN][2]) {
 			boltOn[RIGHT][1] = 0, boltOn[DOWN][2] = 0, tboltOn[3] = true;
 		}
-		else if (boltOn[LEFT][1] && boltOn[UP][0]) {
+		if (boltOn[LEFT][1] && boltOn[UP][0]) {
 			boltOn[UP][0] = 0;
 		}
-		else if (boltOn[RIGHT][1] && boltOn[UP][3]) {
+		if (boltOn[RIGHT][1] && boltOn[UP][3]) {
 			boltOn[UP][3] = 0;
 		}
-		else if (boltOn[LEFT][0] && boltOn[DOWN][0]) {
+		if (boltOn[LEFT][0] && boltOn[DOWN][0]) {
 			boltOn[DOWN][0] = 0;
 		}
-		else if (boltOn[RIGHT][0] && boltOn[DOWN][3]) {
+		if (boltOn[RIGHT][0] && boltOn[DOWN][3]) {
 			boltOn[DOWN][3] = 0;
 		}
 		
@@ -467,7 +482,7 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 					oslDrawString(20, 12+height[0]+0, health);
 					
 					oslSetAlpha(OSL_FX_ALPHA, 96);
-					oslDrawFillRect(0,HEIGHT - (HEIGHT/16 + HEIGHT/32),WIDTH,HEIGHT,RGBA((R_BG*(10-PROGRESS_LEVELCOL*2-1))/8,(G_BG*(10-PROGRESS_LEVELCOL*2-1))/8,(B_BG*(10-PROGRESS_LEVELCOL*2-1))/8,255));
+					oslDrawFillRect(0,HEIGHT - (HEIGHT/16 + HEIGHT/32),WIDTH,HEIGHT,RGB(Progress.r,Progress.g,Progress.b));
 					oslSetAlpha(OSL_FX_ALPHA, 48);
 					oslDrawFillRect(0 + 2,HEIGHT - (HEIGHT/16 + HEIGHT/32)+ 2,((WIDTH - 2)*((100 - ((timeLimit - time)*100)/timeLimit)/PREVIEW))/(100/PREVIEW),HEIGHT - 2,RGB(8,8,8));
 					sprintf(score, "%3d %%", ((100 - ((timeLimit - time)*100)/timeLimit)/PREVIEW)*PREVIEW);
