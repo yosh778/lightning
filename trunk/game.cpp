@@ -467,7 +467,7 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 					oslDrawString(20, 12+height[0]+0, health);
 					
 					oslSetAlpha(OSL_FX_ALPHA, 96);
-					oslDrawGradientRect(0,HEIGHT - (HEIGHT/16 + HEIGHT/32),WIDTH,HEIGHT,bgColor,bgColor,bgColor,bgColor);
+					oslDrawFillRect(0,HEIGHT - (HEIGHT/16 + HEIGHT/32),WIDTH,HEIGHT,RGBA((R_BG*(10-PROGRESS_LEVELCOL*2-1))/8,(G_BG*(10-PROGRESS_LEVELCOL*2-1))/8,(B_BG*(10-PROGRESS_LEVELCOL*2-1))/8,255));
 					oslSetAlpha(OSL_FX_ALPHA, 48);
 					oslDrawFillRect(0 + 2,HEIGHT - (HEIGHT/16 + HEIGHT/32)+ 2,((WIDTH - 2)*((100 - ((timeLimit - time)*100)/timeLimit)/PREVIEW))/(100/PREVIEW),HEIGHT - 2,RGB(8,8,8));
 					sprintf(score, "%3d %%", ((100 - ((timeLimit - time)*100)/timeLimit)/PREVIEW)*PREVIEW);
