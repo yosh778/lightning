@@ -44,6 +44,7 @@ by Yosh alias Hitman_07
 # define MAXBOLTY 2
 # define BOLTLAG 58
 # define TBOLTLAG 36
+# define PROGRESS_LEVELCOL level
 
 
 //bolt disposition parameters
