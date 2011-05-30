@@ -373,7 +373,7 @@ Result gameLevel(OSL_SOUND *fx, OSL_SOUND *critic, OSL_SOUND *hurt, OSL_SOUND *m
 			while (k <redraw && !osl_quit) {
 				if (!Over.quit) {
 					oslStartDrawing();
-					if (level == 4)	oslDrawGradientRect(0,0,WIDTH,HEIGHT,bgColor,RGB(0,0,0),RGB(128,128,128),bgColor);
+					if (level == 4)	oslDrawGradientRect(0,0,WIDTH,HEIGHT,bgColor,RGB(0,0,0),RGB(160,160,160),bgColor);
 					else	oslDrawGradientRect(0,0,WIDTH,HEIGHT,bgColor,RGB(2,3,40),RGB(255,255,255),bgColor);
 
 					// draws images and checks collisions
