@@ -19,7 +19,7 @@ PSP_HEAP_SIZE_MAX();
 int main ()
 {
 	bool alphaBool = true, returned = false;
-	int alpha = 0, bg_col_m = 1, difficulty = NORMAL;
+	int alpha = 0, bg_col_m = 65, difficulty = NORMAL;
 	OSL_COLOR bgstartColor = NULL;
 	Color Bg_col;
 	Bg_col.r = 182;
