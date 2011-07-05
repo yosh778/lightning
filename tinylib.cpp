@@ -422,59 +422,16 @@ bool load(int *bg_col_m, int *difficulty)
 	if (file == NULL)
 		return false;
 
-	if (fgets(fileline, 5, file) == NULL)
+	if (fgets(fileline, 3, file) == NULL)
 		return false;
 
-
-	if (fileline[0] == '0')	*difficulty = EASY;
-	else if (fileline[0] == '1')	*difficulty = NORMAL;
-	else if (fileline[0] == '2')	*difficulty = HARD;
-	else if (fileline[0] == '3')	*difficulty = GOD;
-
-
-	*bg_col_m = 0;
-
-	if (fileline[1] != '.')	{
-		if (fileline[1] == '0')	*bg_col_m+= 0;
-		else if (fileline[1] == '1')	*bg_col_m+= 1;
-		else if (fileline[1] == '2')	*bg_col_m+= 2;
-		else if (fileline[1] == '3')	*bg_col_m+= 3;
-		else if (fileline[1] == '4')	*bg_col_m+= 4;
-		else if (fileline[1] == '5')	*bg_col_m+= 5;
-		else if (fileline[1] == '6')	*bg_col_m+= 6;
-		else if (fileline[1] == '7')	*bg_col_m+= 7;
-		else if (fileline[1] == '8')	*bg_col_m+= 8;
-		else if (fileline[1] == '9')	*bg_col_m+= 9;
-
-		if (fileline[2] != '.')	{
-			*bg_col_m*= 10;
-			if (fileline[2] == '0')	*bg_col_m+= 0;
-			else if (fileline[2] == '1')	*bg_col_m+= 1;
-			else if (fileline[2] == '2')	*bg_col_m+= 2;
-			else if (fileline[2] == '3')	*bg_col_m+= 3;
-			else if (fileline[2] == '4')	*bg_col_m+= 4;
-			else if (fileline[2] == '5')	*bg_col_m+= 5;
-			else if (fileline[2] == '6')	*bg_col_m+= 6;
-			else if (fileline[2] == '7')	*bg_col_m+= 7;
-			else if (fileline[2] == '8')	*bg_col_m+= 8;
-			else if (fileline[2] == '9')	*bg_col_m+= 9;
-
-			if (fileline[3] != '.')	{
-				*bg_col_m*= 10;
-				if (fileline[3] == '0')	*bg_col_m+= 0;
-				else if (fileline[3] == '1')	*bg_col_m+= 1;
-				else if (fileline[3] == '2')	*bg_col_m+= 2;
-				else if (fileline[3] == '3')	*bg_col_m+= 3;
-				else if (fileline[3] == '4')	*bg_col_m+= 4;
-				else if (fileline[3] == '5')	*bg_col_m+= 5;
-				else if (fileline[3] == '6')	*bg_col_m+= 6;
-				else if (fileline[3] == '7')	*bg_col_m+= 7;
-				else if (fileline[3] == '8')	*bg_col_m+= 8;
-				else if (fileline[3] == '9')	*bg_col_m+= 9;
-			}
-		}
-	}
-
+	
+	//*difficulty = fgetc(file);	// alternative
+	//*bg_col_m = fgetc(file);
+	*difficulty = fileline[0];
+	*bg_col_m = fileline[1];
+	
+	
 	fclose(file);
 	return true;
 }
@@ -487,8 +444,8 @@ bool save(int *bg_col_m, int *difficulty)
 	if (file == NULL)
 		return false;
 
-	fprintf(file, "%d", *difficulty);
-	fprintf(file, "%d.", *bg_col_m);
+	fputc(*difficulty,file);
+	fputc(*bg_col_m,file);
 
 
 	fclose(file);
